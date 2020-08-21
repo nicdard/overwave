@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/choice_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/start_transfer_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="16dp"
+        >
+
+        <Switch
+            android:id="@+id/use_bluetooth_switcher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:text="Auto Pair Device"
+            android:textAlignment="textStart"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:checked="true"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/transmitter_radio_group"
+            android:text="Waves type"
+            tools:text="Waves type"
+            android:textSize="18sp"
+            android:textStyle="bold"
+         />
+        <RadioGroup
+            android:id="@+id/transmitter_radio_group"
+            android:checkedButton="@+id/vibration_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:textAlignment="textStart"
+            >
+            <RadioButton
+                android:id="@+id/vibration_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="vibration"
+                android:textSize="18sp"
+                android:textAlignment="textStart"
+                tools:text="vibration" />
+            <RadioButton
+                android:id="@+id/light_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="light"
+                android:textSize="18sp"
+                tools:text="light" />
+            <RadioButton
+                android:id="@+id/sound_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="18sp"
+                android:text="sound"
+                tools:text="sound" />
+        </RadioGroup>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Frequency"
+            android:textSize="20sp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/frequency_input_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textSize="20sp"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/start_transfer_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choice_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start"
+        style="@style/PrimaryButton"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

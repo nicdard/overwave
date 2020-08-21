@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/transmitterFragment"
+        android:icon="@drawable/transmitter"
+        android:title="@string/transmitter" />
+    <item
+        android:id="@+id/receiverFragment"
+        android:icon="@drawable/receiver"
+        android:title="@string/receiver" />
+    <item
+        android:id="@+id/laboratoryFragment"
+        android:icon="@drawable/laboratory"
+        android:title="@string/laboratory" />
+</menu>

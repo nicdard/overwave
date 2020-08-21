@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">overwave</string>
+    <string name="app_name">Overwave</string>
+    <string name="transmitter">Transmitter</string>
+    <string name="receiver">Receiver</string>
+    <string name="laboratory">Laboratory</string>
+    <string name="label_edit_transfer_text">Text to transfer</string>
 </resources>

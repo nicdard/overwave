@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Overwave</string>
+    <string name="transmitter">Trasmettitore</string>
+    <string name="receiver">Ricevitore</string>
+    <string name="laboratory">Laboratorio</string>
+    <string name="label_edit_transfer_text">Testo da trasmettere</string>
+</resources>
