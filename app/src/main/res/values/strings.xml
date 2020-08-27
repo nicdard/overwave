@@ -1,3 +1,37 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">overwave</string>
+
+    <!--  DeviceListActivity -->
+    <string name="scanning">Scanning for devices…</string>
+    <string name="select_device">Select a device to connect</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+
+    <!-- Bluetooth service -->
+    <string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string>
+    <string name="title_connecting">connecting…</string>
+    <string name="title_not_connected">not connected</string>
+    <string name="bluetooth_not_available">Bluetooth not found, switching to manual configuration</string>
+
+    <!-- Receiver Activity -->
+    <string name="switch_enable_bluetooth_text">Auto-detect transmission</string>
+    <string name="switch_enable_bluetooth_textOn">The device receives the configuration for an incoming transmission through bluetooth and automatically listens for incoming data</string>
+    <string name="switch_enable_bluetooth_textOff">Please manually configure the transmission to listen for and start the receiver before the transmitter</string>
+    <string name="receive">Receive</string>
+
+    <!-- Transmission Configuration -->
+    <string name="select_wave">Select a wave type:</string>
+    <string name="vibration">Vibration</string>
+    <string name="sound">Sound</string>
+    <string name="light">Light</string>
+    <string name="insert_sampling_rate">Insert a sampling rate:</string>
+
+    <!-- Transmitter Activity -->
+    <string name="switch_enable_bluetooth_pairing_text">Auto-pair devices</string>
+    <string name="insert_text_to_transmit">Insert a text to transmit:</string>
+    <string name="send">send</string>
+
 </resources>
