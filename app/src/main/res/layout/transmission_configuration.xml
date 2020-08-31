@@ -12,7 +12,8 @@
         android:text="@string/select_wave"
         android:textAlignment="center"
         android:padding="16dp"
-        android:labelFor="@id/radio_group_waves"/>
+        android:labelFor="@id/radio_group_waves"
+        android:gravity="center_horizontal" />
     <RadioGroup
         android:id="@+id/radio_group_waves"
         android:layout_width="match_parent"
@@ -47,7 +48,8 @@
         android:text="@string/insert_sampling_rate"
         android:labelFor="@id/edit_text_sampling_rate"
         android:padding="16dp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
     <EditText
         android:id="@+id/edit_text_sampling_rate"
         android:layout_width="match_parent"

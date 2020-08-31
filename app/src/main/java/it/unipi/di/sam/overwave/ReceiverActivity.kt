@@ -8,13 +8,17 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.appcompat.widget.SwitchCompat
+import it.unipi.di.sam.overwave.transmissions.bluetooth.*
+import kotlinx.coroutines.*
 
 /**
  * @see BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE
  */
 private const val REQUEST_ENABLE_DISCOVERABLE_BT: Int = 1
 
-class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
+    CompoundButton.OnCheckedChangeListener, View.OnClickListener
+{
 
     private var mBluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     /**
@@ -27,6 +31,10 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
      * Name of the connected device
      */
     private var mConnectedDeviceName: String? = null
+
+    /**
+     * The receiver instance to use for getting and decoding the signal.
+     */
 
     /**
      * UI elements.
@@ -58,6 +66,13 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
         // Set listeners.
         mSwitchEnableBluetooth.setOnCheckedChangeListener(this)
         mButtonReceive.setOnClickListener(this)
+
+        savedInstanceState?.run {
+            mEditTextSamplingRate.setText(getInt(KEY_RATE).toString())
+            mSwitchEnableBluetooth.isEnabled = getBoolean(KEY_BT_SUPPORT)
+            mSwitchEnableBluetooth.isChecked = getBoolean(KEY_BLUETOOTH)
+            mRadioGroupWaves.check(getInt(KEY_WAVE))
+        }
 
         if (mBluetoothAdapter == null) {
             // The device doesn't have bluetooth, notify the user.
@@ -190,6 +205,21 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
                     Toast
                         .makeText(this@ReceiverActivity, readMessage, Toast.LENGTH_SHORT)
                         .show()
+                    try {
+                        val lines = readMessage.lineSequence()
+                        when (lines.elementAt(0)) {
+                            START_TRANSMISSION -> {
+                                val configMap = lines
+                                    .drop(1)
+                                    .map { it.split(":") }
+                                    .associate { it[0] to it[1] }
+                                // Start receiver.
+                            }
+                        }
+                        // mBluetoothSyncService!!.write(ACK.toByteArray())
+                    } catch (e: Exception) {
+                        // mBluetoothSyncService!!.write((NACK + e.message).toByteArray())
+                    }
                     // TODO start receiving asyncTask
                     // mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage)
                 }
@@ -211,6 +241,27 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
     }
 
     /**
+     * Handles [mButtonReceive] click to start manually the receiver.
+     */
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.button_receive -> {
+                Toast.makeText(this, "TODO, clicked received", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    /**
+     * Frees resources.
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        mBluetoothSyncService?.stop()
+        // Cancel MainScope().
+        cancel()
+    }
+
+    /**
      * Manages [mSwitchEnableBluetooth] state changes.
      */
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -223,22 +274,13 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
     }
 
     /**
-     * Handles [mButtonReceive] click to start manually the receiver.
+     * Save the current configuration.
      */
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.button_receive -> {
-                Toast.makeText(this, "TODO, clicked received", Toast.LENGTH_LONG).show()
-                // TODO start receiver.
-            }
-        }
-    }
-
-    /**
-     * Frees resources.
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        mBluetoothSyncService?.stop()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_WAVE, mRadioGroupWaves.checkedRadioButtonId)
+        outState.putBoolean(KEY_BLUETOOTH, mSwitchEnableBluetooth.isChecked)
+        outState.putBoolean(KEY_BT_SUPPORT, mSwitchEnableBluetooth.isEnabled)
+        outState.putInt(KEY_RATE, mEditTextSamplingRate.text?.toString()?.toInt() ?: 0)
     }
 }

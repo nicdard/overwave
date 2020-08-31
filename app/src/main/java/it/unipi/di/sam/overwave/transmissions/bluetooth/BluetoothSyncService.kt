@@ -1,4 +1,4 @@
-package it.unipi.di.sam.overwave
+package it.unipi.di.sam.overwave.transmissions.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.os.Bundle
 import android.os.Handler
-import android.widget.Toast
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -27,6 +26,7 @@ const val MESSAGE_TOAST = 5
  */
 const val DEVICE_NAME = "device_name"
 const val TOAST = "toast"
+
 /**
  * Name for the SDP record when creating server socket
  */
@@ -48,16 +48,11 @@ const val STATE_CONNECTED = 3 // now connected to a remote device
 /**
  * A Bluetooth connection manager. It uses
  *
- * @param handler used to send messages back to the UI.
- * @param adapter to be passed in the constructor to ensure that the caller has performed null check on it.
+ * @param mHandler used to send messages back to the UI.
+ * @param mAdapter to be passed in the constructor to ensure that the caller has performed null check on it.
  */
-class BluetoothSyncService(handler: Handler, adapter: BluetoothAdapter) {
+class BluetoothSyncService(private val mHandler: Handler, private val mAdapter: BluetoothAdapter) {
 
-    private val mAdapter: BluetoothAdapter = adapter
-    /**
-     * An Handler to send messages back to the UI Activity
-     */
-    private val mHandler: Handler = handler
     /**
      * A thread to accept new connections.
      * Used "server-side".
@@ -80,11 +75,11 @@ class BluetoothSyncService(handler: Handler, adapter: BluetoothAdapter) {
      * Return the current connection state.
      * Use an Int with synchronized getter.
      */
-    private var mState: Int = STATE_NONE
+    var mState: Int = STATE_NONE
         get() = synchronized(this@BluetoothSyncService) {
             field
         }
-        set(state) = synchronized(this@BluetoothSyncService) {
+        private set(state) = synchronized(this@BluetoothSyncService) {
             field = state
         }
 

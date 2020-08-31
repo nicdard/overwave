@@ -24,12 +24,11 @@
         android:id="@+id/title_paired_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#666"
         android:text="@string/title_paired_devices"
+        android:textStyle="bold"
         android:textAlignment="center"
-        android:textColor="#fff"
         android:visibility="gone"
-        />
+        android:gravity="center_horizontal" />
 
     <ListView
         android:id="@+id/paired_devices"
@@ -43,12 +42,11 @@
         android:id="@+id/title_new_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#666"
         android:textAlignment="center"
+        android:textStyle="bold"
         android:text="@string/title_other_devices"
-        android:textColor="#fff"
         android:visibility="gone"
-        />
+        android:gravity="center_horizontal" />
 
     <ListView
         android:id="@+id/new_devices"

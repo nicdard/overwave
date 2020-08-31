@@ -1,4 +1,4 @@
-package it.unipi.di.sam.overwave
+package it.unipi.di.sam.overwave.transmissions.bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -16,6 +16,7 @@ import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import it.unipi.di.sam.overwave.R
 
 
 const val EXTRA_DEVICE_ADDRESS = "device_address"
