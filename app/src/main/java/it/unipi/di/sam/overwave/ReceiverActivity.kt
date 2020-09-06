@@ -9,16 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.appcompat.widget.SwitchCompat
 import it.unipi.di.sam.overwave.transmissions.bluetooth.*
-import kotlinx.coroutines.*
+import it.unipi.di.sam.overwave.transmissions.receivers.OnReceivedListener
+import it.unipi.di.sam.overwave.transmissions.receivers.Receiver
+import java.lang.NumberFormatException
 
 /**
  * @see BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE
  */
 private const val REQUEST_ENABLE_DISCOVERABLE_BT: Int = 1
 
-class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
-    CompoundButton.OnCheckedChangeListener, View.OnClickListener
-{
+class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener,
+    View.OnClickListener, OnReceivedListener {
 
     private var mBluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     /**
@@ -35,6 +36,13 @@ class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     /**
      * The receiver instance to use for getting and decoding the signal.
      */
+    private var receiver: Receiver? = null
+    /**
+     * The dir where to save data recording.
+     */
+    private val storageDir: String
+        get() = getExternalFilesDir(null)!!.absolutePath //  return "/storage/emulated/0/Android/data/it.unipi.di.sam.accelerometerrecorder/files";
+
 
     /**
      * UI elements.
@@ -49,6 +57,7 @@ class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var mLabelEditTextSamplingRate: TextView
     private lateinit var mEditTextSamplingRate: EditText
     private lateinit var mButtonReceive: Button
+    private lateinit var mReceivedTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +72,7 @@ class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         mLabelEditTextSamplingRate = findViewById(R.id.label_edit_text_sampling_rate)
         mEditTextSamplingRate = findViewById(R.id.edit_text_sampling_rate)
         mButtonReceive = findViewById(R.id.button_receive)
+        mReceivedTextView = findViewById(R.id.received_message)
         // Set listeners.
         mSwitchEnableBluetooth.setOnCheckedChangeListener(this)
         mButtonReceive.setOnClickListener(this)
@@ -214,14 +224,25 @@ class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                                     .map { it.split(":") }
                                     .associate { it[0] to it[1] }
                                 // Start receiver.
+                                val wave = configMap[KEY_WAVE]
+                                val rate = try { configMap[KEY_RATE]?.toInt() } catch (e: NumberFormatException) { null }
+                                if (wave != null && rate != null) {
+                                    receiver = getReceiver(wave)
+                                    receiver!!.record(this@ReceiverActivity, storageDir, rate)
+                                    mBluetoothSyncService!!.write(composeResponse(ACK, START_TRANSMISSION))
+                                } else {
+                                    mBluetoothSyncService!!.write(composeResponse(NACK, START_TRANSMISSION))
+                                }
                             }
+                            END_TRANSMISSION -> {
+                                receiver?.stop()
+                                mBluetoothSyncService!!.write(composeResponse(ACK, END_TRANSMISSION))
+                            }
+                            else -> mBluetoothSyncService!!.write(composeResponse(NACK, lines.elementAt(0)))
                         }
-                        // mBluetoothSyncService!!.write(ACK.toByteArray())
                     } catch (e: Exception) {
-                        // mBluetoothSyncService!!.write((NACK + e.message).toByteArray())
+                        mBluetoothSyncService!!.write((NACK + '\n' + e.message).toByteArray())
                     }
-                    // TODO start receiving asyncTask
-                    // mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage)
                 }
                 MESSAGE_DEVICE_NAME -> {
                     // save the connected device's name
@@ -246,19 +267,18 @@ class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.button_receive -> {
-                Toast.makeText(this, "TODO, clicked received", Toast.LENGTH_LONG).show()
+                receiver = getReceiver(mRadioGroupWaves.checkedRadioButtonId)
+                receiver!!.start(this@ReceiverActivity, this, mEditTextSamplingRate.text?.toString()?.toInt() ?: 0)
+                mReceivedTextView.text = "Listening!"
+                mReceivedTextView.visibility = View.VISIBLE
             }
         }
     }
 
-    /**
-     * Frees resources.
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        mBluetoothSyncService?.stop()
-        // Cancel MainScope().
-        cancel()
+    override fun onReceived(data: ByteArray) {
+        val message = String(data)
+        mReceivedTextView.text = message
+        mReceivedTextView.visibility = View.VISIBLE
     }
 
     /**
@@ -281,6 +301,16 @@ class ReceiverActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         outState.putInt(KEY_WAVE, mRadioGroupWaves.checkedRadioButtonId)
         outState.putBoolean(KEY_BLUETOOTH, mSwitchEnableBluetooth.isChecked)
         outState.putBoolean(KEY_BT_SUPPORT, mSwitchEnableBluetooth.isEnabled)
-        outState.putInt(KEY_RATE, mEditTextSamplingRate.text?.toString()?.toInt() ?: 0)
+        outState.putInt(KEY_RATE, try { mEditTextSamplingRate.text.toString().toInt() } catch (e: Exception) { 0 })
+    }
+
+    /**
+     * Frees resources.
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        mBluetoothSyncService?.stop()
+        receiver?.stop()
+        receiver = null
     }
 }

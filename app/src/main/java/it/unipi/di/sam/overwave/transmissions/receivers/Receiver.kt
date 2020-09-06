@@ -7,15 +7,25 @@ import android.hardware.SensorManager
  * A [Receiver] uses one or more sensors to retrieve data
  * emitted through a physical system by another device.
  */
-internal interface Receiver {
+interface Receiver {
 
     /**
      * Listens for data transmission and retrieves them.
      */
-    fun start(context: Context, frequency: Int = SensorManager.SENSOR_DELAY_FASTEST)
+    fun start(context: Context, receivedListener: OnReceivedListener?, frequency: Int = SensorManager.SENSOR_DELAY_FASTEST)
 
     /**
      * Stops listening for data.
      */
-    fun stop(context: Context)
+    fun stop()
+
+    /**
+     * Records a raw signal in a csv file. Used for offload data analysis and filtering construction.
+     */
+    fun record(context: Context, path: String, frequency: Int = 0)
+}
+
+interface OnReceivedListener {
+
+    fun onReceived(data: ByteArray)
 }

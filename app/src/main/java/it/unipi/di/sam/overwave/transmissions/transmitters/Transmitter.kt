@@ -16,7 +16,7 @@ import android.content.Context
  * process where the physical nearness is one of the factor to be
  * considered.
  */
-internal interface Transmitter {
+interface Transmitter {
 
     /**
      * Transmits [data] using [context] to retrieve the actuator.
@@ -26,6 +26,12 @@ internal interface Transmitter {
      * available through [context].
      */
     suspend fun transmit(context: Context, data: ByteArray, frequency: Int)
+
+    /**
+     * Returns the suggested frequency to be used to send messages through
+     * this [Transmitter] in millisecond.
+     */
+    fun getDefaultFrequency(): Int
 
     /**
      * Returns true if and only if [context] provides the minimum hardware support to

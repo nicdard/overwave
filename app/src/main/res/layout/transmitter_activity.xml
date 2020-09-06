@@ -57,6 +57,26 @@
 
             <include layout="@layout/transmission_configuration" />
 
+            <TextView
+                android:id="@+id/label_edit_text_trials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/edit_text_trials"
+                android:text="@string/insert_number_trials"
+                android:enabled="true"
+                android:padding="16dp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal"
+                />
+            <EditText
+                android:id="@+id/edit_text_trials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:inputType="number"
+                android:enabled="true"
+                />
+
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
 

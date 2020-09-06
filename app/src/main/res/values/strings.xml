@@ -33,5 +33,6 @@
     <string name="switch_enable_bluetooth_pairing_text">Auto-pair devices</string>
     <string name="insert_text_to_transmit">Insert a text to transmit:</string>
     <string name="send">send</string>
+    <string name="insert_number_trials">Insert the number of trials</string>
 
 </resources>

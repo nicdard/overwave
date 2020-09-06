@@ -10,24 +10,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.experimental.and
 
-internal const val INITIAL_SEQUENCE     = "01"
-internal const val FINAL_SEQUENCE       = "10"
+const val INITIAL_SEQUENCE     = "01"
+const val FINAL_SEQUENCE       = "10"
 
-internal object VibrationTransmitter : Transmitter {
+object VibrationTransmitter : Transmitter {
 
     override suspend fun transmit(context: Context, data: ByteArray, frequency: Int) {
         val vibrator = ContextCompat.getSystemService(context, Vibrator::class.java)
         if (vibrator != null) {
             withContext(Dispatchers.Default) {
                 // Add Initial-sequence
-                val payload = INITIAL_SEQUENCE + data.joinToString(separator = "") {
-                        // Get the binary string representation of the byte
-                        Integer.toBinaryString(it.toInt())
-                            // 8-bit 0-padded string.
-                            .format("%8").replace(' ', '0')
-                            // 16-bit: encode each bit in a sequence of 2 equal bits
-                            .format("%16").replace("0", "00").replace("1", "11")
-                    } + FINAL_SEQUENCE
+                val payload = dataToBinaryString(data)
                 // TODO apply EEC.
                 // Transform into a vibration pattern.
                 val timings = createTimings(payload, frequency)
@@ -55,6 +48,17 @@ internal object VibrationTransmitter : Transmitter {
             throw IllegalStateException("Couldn't find a Vibrator to transmit the data")
         }
     }
+
+    override fun getDefaultFrequency(): Int = 200
+
+    private fun dataToBinaryString(data: ByteArray) = INITIAL_SEQUENCE + data.joinToString(separator = "") {
+            // Get the binary string representation of the byte
+            Integer.toBinaryString(it.toInt())
+                // 8-bit 0-padded string.
+                .padStart(8, '0')
+                // 16-bit: encode each bit in a sequence of 2 equal bits
+                .replace("0", "00").replace("1", "11")
+        } + FINAL_SEQUENCE
 
     private fun createTimings(payload: String, frequency: Int): LongArray {
         // Transform into a vibration pattern.

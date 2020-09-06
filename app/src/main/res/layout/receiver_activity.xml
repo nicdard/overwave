@@ -41,6 +41,14 @@
 
             <include layout="@layout/transmission_configuration" />
 
+            <TextView
+                android:id="@+id/received_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:paddingVertical="16dp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
 

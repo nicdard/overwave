@@ -9,6 +9,10 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- Used to store CSV files of data sampling. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"

@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.*
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,7 @@ private const val REQUEST_SELECT_BT_DEVICE: Int = 2
 const val KEY_WAVE          = "wave_key"
 const val KEY_RATE          = "rate_key"
 const val KEY_TEXT          = "text_key"
+const val KEY_TRIALS        = "trials_key"
 const val KEY_BLUETOOTH     = "bluetooth_key"
 const val KEY_BT_SUPPORT    = "bt_support_key"
 
@@ -61,6 +63,8 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var mEditTextSamplingRate: EditText
     private lateinit var mLabelEditTextInsert: TextView
     private lateinit var mEditTextInsert: EditText
+    private lateinit var mLabelEditTextTrials: TextView
+    private lateinit var mEditTextTrials: EditText
     private lateinit var mButtonSend: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +81,8 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         mEditTextSamplingRate = findViewById(R.id.edit_text_sampling_rate)
         mLabelEditTextInsert = findViewById(R.id.label_edit_text_insert_text)
         mEditTextInsert = findViewById(R.id.edit_text_insert_text)
+        mLabelEditTextTrials = findViewById(R.id.label_edit_text_trials)
+        mEditTextTrials = findViewById(R.id.edit_text_trials)
         mButtonSend = findViewById(R.id.button_send)
         // Bind progress button.
         bindProgressButton(mButtonSend)
@@ -87,6 +93,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         savedInstanceState?.run {
             mEditTextInsert.setText(getString(KEY_TEXT))
             mEditTextSamplingRate.setText(getInt(KEY_RATE).toString())
+            mEditTextTrials.setText(getInt(KEY_TRIALS).toString())
             mSwitchEnableBluetooth.isEnabled = getBoolean(KEY_BT_SUPPORT)
             mSwitchEnableBluetooth.isChecked = getBoolean(KEY_BLUETOOTH)
             mRadioGroupWaves.check(getInt(KEY_WAVE))
@@ -116,7 +123,14 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
      * checked [mSwitchEnableBluetooth].
      */
     private fun onCheckedBluetoothSwitch(isChecked: Boolean = isCheckedBluetoothSwitch()) {
-        if (isChecked) { ensureBluetoothEnabled() }
+        if (isChecked) {
+            mLabelEditTextTrials.visibility = View.VISIBLE
+            mEditTextTrials.visibility = View.VISIBLE
+            ensureBluetoothEnabled()
+        } else {
+            mLabelEditTextTrials.visibility = View.GONE
+            mEditTextTrials.visibility = View.GONE
+        }
     }
 
     /**
@@ -182,8 +196,36 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     private fun getConfigurationAsString(): String = composeStartTransmissionMessage(
         mRadioGroupWaves.checkedRadioButtonId,
-        mEditTextSamplingRate.text.toString()
+        mEditTextSamplingRate.text.toString(),
+        mEditTextTrials.text.toString()
     )
+
+    private fun parseResponse(message: Message) {
+        val readBuf = message.obj as ByteArray
+        // construct a string from the valid bytes in the buffer
+        val readMessage = String(readBuf, 0, message.arg1)
+        val chunks = readMessage.lines()
+        val receiverStatus = chunks[0]
+        val command = chunks[1]
+        if (receiverStatus == ACK) {
+            when (command) {
+                START_TRANSMISSION -> {
+                    onStartTransmission()
+                }
+                END_TRANSMISSION -> {
+                    val trials = getTrials()
+                    if (trials == 0) {
+                        Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Next", Toast.LENGTH_SHORT).show()
+                        mBluetoothSyncService!!.write(getConfigurationAsString().toByteArray())
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(this, "Receiver device experienced an error", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     /**
      * The Handler that gets information back from the BluetoothChatService
@@ -212,12 +254,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         .show()
                 }
                 MESSAGE_READ -> {
-                    val readBuf = msg.obj as ByteArray
-                    // construct a string from the valid bytes in the buffer
-                    val readMessage = String(readBuf, 0, msg.arg1)
-                    Toast
-                        .makeText(this@TransmitterActivity, readMessage, Toast.LENGTH_LONG)
-                        .show()
+                    parseResponse(msg)
                 }
                 MESSAGE_DEVICE_NAME -> {
                     // save the connected device's name
@@ -277,7 +314,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val transmitter: Transmitter = getTransmitter(mRadioGroupWaves.checkedRadioButtonId)
         if (transmitter.hasHardwareSupport(this)) {
             launch {
-                delay(1000)
+                delay(2000)
                 // Show feedback to the user.
                 mButtonSend.showProgress {
                     buttonText = "Transmitting!"
@@ -287,11 +324,18 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 transmitter.transmit(
                     this@TransmitterActivity,
                     mEditTextInsert.text.toString().toByteArray(),
-                    mEditTextSamplingRate.text?.toString()?.toInt() ?: 200
+                    /*mEditTextSamplingRate.text?.toString()?.toInt() ?:*/ 200
                 )
                 // Update ui.
                 mButtonSend.hideProgress(R.string.send)
                 mButtonSend.isEnabled = true
+                if (isCheckedBluetoothSwitch()) {
+                    // Communicate to the other device.
+                    mBluetoothSyncService!!.write(END_TRANSMISSION.toByteArray())
+                    val trials = getTrials()
+                    Log.d("TRANSMITTER", "trials $trials")
+                    mEditTextTrials.setText((trials - 1).toString())
+                }
             }
         } else {
             Toast.makeText(
@@ -311,6 +355,8 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         cancel()
     }
 
+    private fun getTrials() = try { mEditTextTrials.text.toString().toInt() } catch (e: Exception) { 1 }
+
     /**
      * Save the current configuration.
      */
@@ -321,5 +367,6 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         outState.putBoolean(KEY_BLUETOOTH, mSwitchEnableBluetooth.isChecked)
         outState.putBoolean(KEY_BT_SUPPORT, mSwitchEnableBluetooth.isEnabled)
         outState.putInt(KEY_RATE, try { mEditTextSamplingRate.text.toString().toInt() } catch (e: Exception) { 0 })
+        outState.putInt(KEY_TRIALS, getTrials())
     }
 }
