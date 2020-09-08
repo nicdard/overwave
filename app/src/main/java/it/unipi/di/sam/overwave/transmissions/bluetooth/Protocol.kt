@@ -23,10 +23,10 @@ const val NACK = "NACK"
  * Converts a wave's string resource id into its string representation.
  */
 fun getWaveAsString(id: Int) = when (id) {
-    R.id.radio_button_light     -> "light"
-    R.id.radio_button_sound     -> "sound"
-    R.id.radio_button_vibration -> "vibration"
-    else                        -> throw IllegalArgumentException("Unknown wave type.")
+    R.id.radio_button_light, R.id.receiver_radio_button_light           -> "light"
+    R.id.radio_button_sound, R.id.receiver_radio_button_sound           -> "sound"
+    R.id.radio_button_vibration, R.id.receiver_radio_button_vibration   -> "vibration"
+    else                                                                -> throw IllegalArgumentException("Unknown wave type.")
 }
 
 fun getTransmitter(id: Int): Transmitter = when (id) {

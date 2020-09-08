@@ -183,8 +183,7 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
     }
 
     /**
-     * The Handler that gets information back from the [BluetoothSyncService].
-     *
+     * The Handler that gets information back from the [BluetoothService].
      */
     private val mHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
