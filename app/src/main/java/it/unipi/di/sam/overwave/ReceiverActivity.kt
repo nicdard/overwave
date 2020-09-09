@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.appcompat.widget.SwitchCompat
 import it.unipi.di.sam.overwave.transmissions.bluetooth.*
-import it.unipi.di.sam.overwave.transmissions.receivers.OnReceivedListener
 import it.unipi.di.sam.overwave.transmissions.receivers.Receiver
+import kotlinx.coroutines.*
 import java.lang.NumberFormatException
 
 /**
@@ -19,7 +19,7 @@ import java.lang.NumberFormatException
 private const val REQUEST_ENABLE_DISCOVERABLE_BT: Int = 1
 
 class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener,
-    View.OnClickListener, OnReceivedListener {
+    View.OnClickListener, CoroutineScope by MainScope() {
 
     private var mBluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     /**
@@ -43,7 +43,6 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
     private val storageDir: String
         get() = getExternalFilesDir(null)!!.absolutePath //  return "/storage/emulated/0/Android/data/it.unipi.di.sam.accelerometerrecorder/files";
 
-
     /**
      * UI elements.
      */
@@ -59,6 +58,9 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
     private lateinit var mButtonReceive: Button
     private lateinit var mReceivedTextView: TextView
 
+    private lateinit var mLabelEditTextFrequency: TextView
+    private lateinit var mEditTextFrequency: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.receiver_activity)
@@ -73,12 +75,16 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
         mEditTextSamplingRate = findViewById(R.id.edit_text_sampling_rate)
         mButtonReceive = findViewById(R.id.button_receive)
         mReceivedTextView = findViewById(R.id.received_message)
+
+        mLabelEditTextFrequency = findViewById(R.id.label_edit_text_frequency)
+        mEditTextFrequency = findViewById(R.id.edit_text_frequency)
         // Set listeners.
         mSwitchEnableBluetooth.setOnCheckedChangeListener(this)
         mButtonReceive.setOnClickListener(this)
 
         savedInstanceState?.run {
             mEditTextSamplingRate.setText(getInt(KEY_RATE).toString())
+            mEditTextFrequency.setText(getInt(KEY_FREQUENCY).toString())
             mSwitchEnableBluetooth.isEnabled = getBoolean(KEY_BT_SUPPORT)
             mSwitchEnableBluetooth.isChecked = getBoolean(KEY_BLUETOOTH)
             mRadioGroupWaves.check(getInt(KEY_WAVE))
@@ -180,6 +186,8 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
         mLabelEditTextSamplingRate.isEnabled = isManual
         mEditTextSamplingRate.isEnabled = isManual
         mButtonReceive.isEnabled = isManual
+        mLabelEditTextFrequency.isEnabled = isManual
+        mEditTextFrequency.isEnabled = isManual
     }
 
     /**
@@ -226,9 +234,16 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
                                 // Start receiver.
                                 val wave = configMap[KEY_WAVE]
                                 val rate = try { configMap[KEY_RATE]?.toInt() } catch (e: NumberFormatException) { null }
-                                if (wave != null && rate != null) {
-                                    receiver = getReceiver(wave)
-                                    receiver!!.record(this@ReceiverActivity, storageDir, rate)
+                                val frequency = try { configMap[KEY_FREQUENCY]?.toInt() } catch (e: NumberFormatException) { null }
+                                if (wave != null && rate != null && frequency != null) {
+                                    receiver = getReceiver(
+                                        applicationContext,
+                                        wave,
+                                        true,
+                                        rate,
+                                        frequency
+                                    )
+                                    receiver!!.start()
                                     mBluetoothSyncService!!.write(composeResponse(ACK, START_TRANSMISSION))
                                 } else {
                                     mBluetoothSyncService!!.write(composeResponse(NACK, START_TRANSMISSION))
@@ -236,6 +251,8 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
                             }
                             END_TRANSMISSION -> {
                                 receiver?.stop()
+                                val message = receiver?.consume()
+                                Toast.makeText(this@ReceiverActivity, "Received: $message", Toast.LENGTH_SHORT).show()
                                 mBluetoothSyncService!!.write(composeResponse(ACK, END_TRANSMISSION))
                             }
                             else -> mBluetoothSyncService!!.write(composeResponse(NACK, lines.elementAt(0)))
@@ -267,16 +284,24 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.button_receive -> {
-                receiver = getReceiver(mRadioGroupWaves.checkedRadioButtonId)
-                receiver!!.start(this@ReceiverActivity, this, mEditTextSamplingRate.text?.toString()?.toInt() ?: 0)
+                receiver = getReceiver(
+                    this@ReceiverActivity,
+                    getWaveAsString(mRadioGroupWaves.checkedRadioButtonId),
+                    false,
+                    getSamplingRate(),
+                    getFrequency()
+                )
+                receiver!!.start()
                 mReceivedTextView.text = "Listening!"
                 mReceivedTextView.visibility = View.VISIBLE
+
+
             }
         }
     }
 
-    override fun onReceived(data: ByteArray) {
-        val message = String(data)
+    fun onReceived(message: String) {
+        // Toast.makeText(this, "received ${message}", Toast.LENGTH_SHORT).show()
         mReceivedTextView.text = message
         mReceivedTextView.visibility = View.VISIBLE
     }
@@ -293,6 +318,11 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
         }
     }
 
+    private fun getSamplingRate() = try { mEditTextSamplingRate.text.toString().toInt() } catch (e: Exception) { 0 }
+
+    private fun getFrequency() = try { mEditTextFrequency.text.toString().toInt() } catch (e: Exception) { 200 }
+
+
     /**
      * Save the current configuration.
      */
@@ -302,6 +332,7 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
         outState.putBoolean(KEY_BLUETOOTH, mSwitchEnableBluetooth.isChecked)
         outState.putBoolean(KEY_BT_SUPPORT, mSwitchEnableBluetooth.isEnabled)
         outState.putInt(KEY_RATE, try { mEditTextSamplingRate.text.toString().toInt() } catch (e: Exception) { 0 })
+        outState.putInt(KEY_FREQUENCY, getFrequency())
     }
 
     /**
@@ -310,6 +341,7 @@ class ReceiverActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeList
     override fun onDestroy() {
         super.onDestroy()
         mBluetoothSyncService?.stop()
+        cancel()
         receiver?.stop()
         receiver = null
     }

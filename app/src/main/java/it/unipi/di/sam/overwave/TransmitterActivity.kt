@@ -31,7 +31,8 @@ private const val REQUEST_SELECT_BT_DEVICE: Int = 2
  * Keys for UI state bundle properties.
  */
 const val KEY_WAVE          = "wave_key"
-const val KEY_RATE          = "rate_key"
+const val KEY_RATE          = "sampling_rate_key"
+const val KEY_FREQUENCY     = "frequency_key"
 const val KEY_TEXT          = "text_key"
 const val KEY_TRIALS        = "trials_key"
 const val KEY_BLUETOOTH     = "bluetooth_key"
@@ -61,6 +62,8 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var mRadioButtonSound: AppCompatRadioButton
     private lateinit var mLabelEditTextSamplingRate: TextView
     private lateinit var mEditTextSamplingRate: EditText
+    private lateinit var mLabelEditTextFrequency: TextView
+    private lateinit var mEditTextFrequency: EditText
     private lateinit var mLabelEditTextInsert: TextView
     private lateinit var mEditTextInsert: EditText
     private lateinit var mLabelEditTextTrials: TextView
@@ -79,6 +82,8 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         mRadioButtonLight = findViewById(R.id.radio_button_light)
         mLabelEditTextSamplingRate = findViewById(R.id.label_edit_text_sampling_rate)
         mEditTextSamplingRate = findViewById(R.id.edit_text_sampling_rate)
+        mLabelEditTextFrequency = findViewById(R.id.label_edit_text_frequency)
+        mEditTextFrequency = findViewById(R.id.edit_text_frequency)
         mLabelEditTextInsert = findViewById(R.id.label_edit_text_insert_text)
         mEditTextInsert = findViewById(R.id.edit_text_insert_text)
         mLabelEditTextTrials = findViewById(R.id.label_edit_text_trials)
@@ -93,6 +98,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         savedInstanceState?.run {
             mEditTextInsert.setText(getString(KEY_TEXT))
             mEditTextSamplingRate.setText(getInt(KEY_RATE).toString())
+            mEditTextFrequency.setText(getInt(KEY_FREQUENCY).toString())
             mEditTextTrials.setText(getInt(KEY_TRIALS).toString())
             mSwitchEnableBluetooth.isEnabled = getBoolean(KEY_BT_SUPPORT)
             mSwitchEnableBluetooth.isChecked = getBoolean(KEY_BLUETOOTH)
@@ -197,6 +203,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private fun getConfigurationAsString(): String = composeStartTransmissionMessage(
         mRadioGroupWaves.checkedRadioButtonId,
         mEditTextSamplingRate.text.toString(),
+        mEditTextFrequency.text.toString(),
         mEditTextTrials.text.toString()
     )
 
@@ -314,7 +321,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val transmitter: Transmitter = getTransmitter(mRadioGroupWaves.checkedRadioButtonId)
         if (transmitter.hasHardwareSupport(this)) {
             launch {
-                delay(2000)
+                delay(3000)
                 // Show feedback to the user.
                 mButtonSend.showProgress {
                     buttonText = "Transmitting!"
@@ -324,7 +331,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 transmitter.transmit(
                     this@TransmitterActivity,
                     mEditTextInsert.text.toString().toByteArray(),
-                    /*mEditTextSamplingRate.text?.toString()?.toInt() ?:*/ 200
+                    getFrequency()
                 )
                 // Update ui.
                 mButtonSend.hideProgress(R.string.send)
@@ -357,6 +364,8 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     private fun getTrials() = try { mEditTextTrials.text.toString().toInt() } catch (e: Exception) { 1 }
 
+    private fun getFrequency() = try { mEditTextFrequency.text.toString().toInt() } catch (e: Exception) { 200 }
+
     /**
      * Save the current configuration.
      */
@@ -367,6 +376,7 @@ class TransmitterActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         outState.putBoolean(KEY_BLUETOOTH, mSwitchEnableBluetooth.isChecked)
         outState.putBoolean(KEY_BT_SUPPORT, mSwitchEnableBluetooth.isEnabled)
         outState.putInt(KEY_RATE, try { mEditTextSamplingRate.text.toString().toInt() } catch (e: Exception) { 0 })
+        outState.putInt(KEY_FREQUENCY, getFrequency())
         outState.putInt(KEY_TRIALS, getTrials())
     }
 }

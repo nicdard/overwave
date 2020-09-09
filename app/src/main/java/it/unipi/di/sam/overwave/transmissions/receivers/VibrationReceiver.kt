@@ -1,5 +1,5 @@
 package it.unipi.di.sam.overwave.transmissions.receivers
-
+/*
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -172,3 +172,4 @@ object VibrationReceiver : Receiver, SensorEventListener {
         shouldRecord = true
     }
 }
+*/

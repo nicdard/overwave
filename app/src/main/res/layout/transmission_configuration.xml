@@ -42,6 +42,22 @@
     </RadioGroup>
 
     <TextView
+        android:id="@+id/label_edit_text_frequency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/insert_transmitter_frequency"
+        android:labelFor="@id/label_edit_text_frequency"
+        android:padding="16dp"
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
+    <EditText
+        android:id="@+id/edit_text_frequency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        />
+
+    <TextView
         android:id="@+id/label_edit_text_sampling_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
