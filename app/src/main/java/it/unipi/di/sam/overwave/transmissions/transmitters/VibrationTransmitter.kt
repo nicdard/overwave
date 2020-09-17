@@ -10,9 +10,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.experimental.and
 
-const val INITIAL_SEQUENCE     = "01"
-const val FINAL_SEQUENCE       = "10"
-
 object VibrationTransmitter : Transmitter {
 
     override suspend fun transmit(context: Context, data: ByteArray, frequency: Int) {
@@ -50,15 +47,6 @@ object VibrationTransmitter : Transmitter {
     }
 
     override fun getDefaultFrequency(): Int = 200
-
-    private fun dataToBinaryString(data: ByteArray) = INITIAL_SEQUENCE + data.joinToString(separator = "") {
-            // Get the binary string representation of the byte
-            Integer.toBinaryString(it.toInt())
-                // 8-bit 0-padded string.
-                .padStart(8, '0')
-                // 16-bit: encode each bit in a sequence of 2 equal bits
-                .replace("0", "00").replace("1", "11")
-        } + FINAL_SEQUENCE
 
     private fun createTimings(payload: String, frequency: Int): LongArray {
         // Transform into a vibration pattern.

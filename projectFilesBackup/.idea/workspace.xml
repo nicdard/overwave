@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config>
+        <device id="pixel" />
+        <device id="Nexus 7" />
+        <device id="pixel_3_xl" />
+        <device id="pixel_2" />
+        <device id="Nexus 10" />
+        <device id="pixel_3a_xl" />
+        <device id="pixel_3a" />
+        <device id="Nexus 6P" />
+        <device id="pixel_xl" />
+        <device id="automotive_1024p_landscape" />
+        <target>android-29</target>
+      </config>
+    </shared>
+  </component>
+  <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="info" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
+    <option name="TOOL_WINDOW_REGEXP_FILTER" value="false" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="825fd991-f495-4639-b109-16052f3468c8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/transmitters/LightTransmitter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/bluetooth/Protocol.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/bluetooth/Protocol.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/receivers/Accelerometer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/receivers/Accelerometer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/transmitters/Transmitter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/transmitters/Transmitter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/transmitters/VibrationTransmitter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/transmitters/VibrationTransmitter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="5200e2e05befc4b3" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Object" />
+        <option value="navigationResourceFile" />
+        <option value="resourceFile" />
+        <option value="valueResourceFile" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin Class" />
+        <option value="Kotlin File" />
+        <option value="layoutResourceFile" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="coroutine-try" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="MERGE" />
+  </component>
+  <component name="ProjectId" id="1g5tdJsTj8VMevquo3m9M8S7LkF" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Pixel_2_API_24" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-09-10T16:56:57.234Z" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable-v24" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/bluetooth" />
+    <property name="not.eligible.for.single.variant.sync" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.17" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.build" />
+  </component>
+  <component name="PsdUISettings">
+    <option name="MODULE_TAB" value="Default Config" />
+    <option name="LAST_EDITED_BUILD_TYPE" value="release" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/bluetooth" />
+      <recent name="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave" />
+      <recent name="$PROJECT_DIR$/app/src/main/res/layout" />
+      <recent name="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/receivers" />
+      <recent name="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="it.unipi.di.sam.overwave.transmissions.transmitters" />
+      <recent name="it.unipi.di.sam.overwave.connectors" />
+      <recent name="it.unipi.di.sam.overwave" />
+      <recent name="it.unipi.di.sam.overwave.activities" />
+    </key>
+    <key name="android.template.1219174438">
+      <recent name="it.unipi.di.sam.overwave" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/bluetooth" />
+      <recent name="$PROJECT_DIR$/app/src/main/java/it/unipi/di/sam/overwave/transmissions/transmitters" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Android App.app">
+    <configuration name="ExampleUnitTest.stringByteTest" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.unipi.di.sam.overwave.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.unipi.di.sam.overwave" />
+      <option name="MAIN_CLASS_NAME" value="it.unipi.di.sam.overwave.ExampleUnitTest" />
+      <option name="METHOD_NAME" value="stringByteTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="app" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
+      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Hybrid>
+      <Java />
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="overwave [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="dependencies" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="AccelerometerTest.testDecoding" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.unipi.di.sam.overwave.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.unipi.di.sam.overwave" />
+      <option name="MAIN_CLASS_NAME" value="it.unipi.di.sam.overwave.AccelerometerTest" />
+      <option name="METHOD_NAME" value="testDecoding" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AccelerometerTest.testDecoding" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.unipi.di.sam.overwave.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.unipi.di.sam.overwave" />
+      <option name="MAIN_CLASS_NAME" value="it.unipi.di.sam.overwave.AccelerometerTest" />
+      <option name="METHOD_NAME" value="testDecoding" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AccelerometerTest.testDecoding" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.unipi.di.sam.overwave.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.unipi.di.sam.overwave" />
+      <option name="MAIN_CLASS_NAME" value="it.unipi.di.sam.overwave.AccelerometerTest" />
+      <option name="METHOD_NAME" value="testDecoding" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AccelerometerTest.testDecoding" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="app" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="it.unipi.di.sam.overwave.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="it.unipi.di.sam.overwave" />
+      <option name="MAIN_CLASS_NAME" value="it.unipi.di.sam.overwave.AccelerometerTest" />
+      <option name="METHOD_NAME" value="testDecoding" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.overwave [dependencies]" />
+        <item itemvalue="Android JUnit.ExampleUnitTest.stringByteTest" />
+        <item itemvalue="Gradle.overwave [dependencies]" />
+        <item itemvalue="Android JUnit.ExampleUnitTest.stringByteTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="825fd991-f495-4639-b109-16052f3468c8" name="Default Changelist" comment="" />
+      <created>1593678605588</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593678605588</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="645" y="382" width="1900" height="1094" key="#PSD" timestamp="1598720852317">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="645" y="382" width="1900" height="1094" key="#PSD/0.55.3200.1745@0.55.3200.1745" timestamp="1598720852317" />
+    <state x="1163" y="35" width="864" height="1606" key="#com.intellij.ide.util.MemberChooser" timestamp="1599787286290">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1163" y="35" width="864" height="1606" key="#com.intellij.ide.util.MemberChooser/0.55.3200.1745@0.55.3200.1745" timestamp="1599787286290" />
+    <state x="2298" y="27" key="#com.intellij.ide.util.MemberChooser/1600.0.1920.1080/0.27.1600.873@1600.0.1920.1080" timestamp="1598861268077" />
+    <state x="1227" y="550" width="735" height="719" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1599751517968">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1227" y="550" width="735" height="719" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1599751517968" />
+    <state x="551" y="730" width="2098" height="358" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1597760197265">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="551" y="730" width="2098" height="358" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1597760197265" />
+    <state x="1142" y="693" width="1049" height="472" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages" timestamp="1597760195070">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1142" y="693" width="1049" height="472" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages/0.55.3200.1745@0.55.3200.1745" timestamp="1597760195070" />
+    <state x="487" y="35" width="2196" height="1765" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1599443845954">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="487" y="35" width="2196" height="1765" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1599443845954" />
+    <state x="1071" y="90" width="1048" height="1039" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1598265256873">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1071" y="90" width="1048" height="1039" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1598265256873" />
+    <state x="1142" y="94" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog" timestamp="1598632824927">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1142" y="94" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1598632824927" />
+    <state x="1018" y="358" width="955" height="918" key="AndroidCreateResourceFileDialog" timestamp="1599784748237">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1018" y="358" width="955" height="918" key="AndroidCreateResourceFileDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1599784748237" />
+    <state x="1349" y="35" width="491" height="1510" key="AndroidCreateXmlResourceDialog" timestamp="1599638793837">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1349" y="35" width="491" height="1510" key="AndroidCreateXmlResourceDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1599638793837" />
+    <state x="100" y="55" width="3000" height="1565" key="DiffContextDialog" timestamp="1599751613329">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="100" y="55" width="3000" height="1565" key="DiffContextDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1599751613329" />
+    <state x="1166" y="371" width="848" height="1060" key="FileChooserDialogImpl" timestamp="1599210951323">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1166" y="371" width="848" height="1060" key="FileChooserDialogImpl/0.55.3200.1745@0.55.3200.1745" timestamp="1599210951323" />
+    <state width="3106" height="423" key="GridCell.Tab.0.bottom" timestamp="1599759881290">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="423" key="GridCell.Tab.0.bottom/0.55.3200.1745@0.55.3200.1745" timestamp="1599759881290" />
+    <state width="3106" height="423" key="GridCell.Tab.0.center" timestamp="1599759881289">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="423" key="GridCell.Tab.0.center/0.55.3200.1745@0.55.3200.1745" timestamp="1599759881289" />
+    <state width="3106" height="423" key="GridCell.Tab.0.left" timestamp="1599759881289">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="423" key="GridCell.Tab.0.left/0.55.3200.1745@0.55.3200.1745" timestamp="1599759881289" />
+    <state width="3106" height="423" key="GridCell.Tab.0.right" timestamp="1599759881289">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="423" key="GridCell.Tab.0.right/0.55.3200.1745@0.55.3200.1745" timestamp="1599759881289" />
+    <state width="3106" height="539" key="GridCell.Tab.1.bottom" timestamp="1598086858829">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="539" key="GridCell.Tab.1.bottom/0.55.3200.1745@0.55.3200.1745" timestamp="1598086858829" />
+    <state width="3106" height="539" key="GridCell.Tab.1.center" timestamp="1598086858826">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="539" key="GridCell.Tab.1.center/0.55.3200.1745@0.55.3200.1745" timestamp="1598086858826" />
+    <state width="3106" height="539" key="GridCell.Tab.1.left" timestamp="1598086858825">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="539" key="GridCell.Tab.1.left/0.55.3200.1745@0.55.3200.1745" timestamp="1598086858825" />
+    <state width="3106" height="539" key="GridCell.Tab.1.right" timestamp="1598086858828">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state width="3106" height="539" key="GridCell.Tab.1.right/0.55.3200.1745@0.55.3200.1745" timestamp="1598086858828" />
+    <state x="825" y="314" width="1539" height="1231" key="NewModule_or_Project.wizard" timestamp="1598178751014">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="825" y="314" width="1539" height="1231" key="NewModule_or_Project.wizard/0.55.3200.1745@0.55.3200.1745" timestamp="1598178751014" />
+    <state x="1087" y="268" width="1016" height="1282" key="RollbackChangesDialog" timestamp="1599442305340">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1087" y="268" width="1016" height="1282" key="RollbackChangesDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1599442305340" />
+    <state x="611" y="182" width="1978" height="1494" key="SettingsEditor" timestamp="1597649865465">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="611" y="182" width="1978" height="1494" key="SettingsEditor/0.55.3200.1745@0.55.3200.1745" timestamp="1597649865465" />
+    <state x="1162" y="522" width="865" height="614" key="chooseDestDirectoryDialog" timestamp="1598016397877">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1162" y="522" width="865" height="614" key="chooseDestDirectoryDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1598016397877" />
+    <state x="100" y="115" width="3000" height="1565" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1597650953213">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="100" y="115" width="3000" height="1565" key="com.android.tools.idea.avdmanager.AvdListDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1597650953213" />
+    <state x="941" y="331" key="com.intellij.ide.util.TipDialog" timestamp="1600301831655">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="941" y="331" key="com.intellij.ide.util.TipDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1600301831655" />
+    <state x="468" y="105" key="com.intellij.ide.util.TipDialog/1600.0.1920.1080/0.27.1600.873@0.27.1600.873" timestamp="1598860999184" />
+    <state x="2162" y="96" key="com.intellij.ide.util.TipDialog/1600.0.1920.1080/0.27.1600.873@1600.0.1920.1080" timestamp="1598874015904" />
+    <state x="1157" y="721" width="885" height="376" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1599694954207">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1157" y="721" width="885" height="376" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.55.3200.1745@0.55.3200.1745" timestamp="1599694954207" />
+    <state x="915" y="369" width="1370" height="1096" key="find.popup" timestamp="1599748600438">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="915" y="369" width="1370" height="1096" key="find.popup/0.55.3200.1745@0.55.3200.1745" timestamp="1599748600438" />
+    <state x="1095" y="251" width="1000" height="1317" key="refactoring.ChangeSignatureDialog" timestamp="1598192529765">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1095" y="251" width="1000" height="1317" key="refactoring.ChangeSignatureDialog/0.55.3200.1745@0.55.3200.1745" timestamp="1598192529765" />
+    <state x="928" y="404" key="run.anything.popup" timestamp="1599906962195">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="928" y="404" key="run.anything.popup/0.55.3200.1745@0.55.3200.1745" timestamp="1599906962195" />
+    <state x="889" y="55" width="1418" height="1741" key="search.everywhere.popup" timestamp="1600299938182">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="889" y="55" width="1418" height="1741" key="search.everywhere.popup/0.55.3200.1745@0.55.3200.1745" timestamp="1600299938182" />
+    <state x="1371" y="634" width="448" height="591" key="strings.multiline.dialog" timestamp="1597828268918">
+      <screen x="0" y="55" width="3200" height="1745" />
+    </state>
+    <state x="1371" y="634" width="448" height="591" key="strings.multiline.dialog/0.55.3200.1745@0.55.3200.1745" timestamp="1597828268918" />
+  </component>
+</project>

@@ -35,5 +35,7 @@
     <string name="send">send</string>
     <string name="insert_number_trials">Insert the number of trials</string>
     <string name="insert_transmitter_frequency">Insert transmitter frequency:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -5,6 +5,7 @@ import it.unipi.di.sam.overwave.*
 import it.unipi.di.sam.overwave.transmissions.receivers.Accelerometer
 import it.unipi.di.sam.overwave.transmissions.receivers.OnReceived
 import it.unipi.di.sam.overwave.transmissions.receivers.Receiver
+import it.unipi.di.sam.overwave.transmissions.transmitters.LightTransmitter
 import it.unipi.di.sam.overwave.transmissions.transmitters.Transmitter
 import it.unipi.di.sam.overwave.transmissions.transmitters.VibrationTransmitter
 import kotlinx.coroutines.Job
@@ -31,6 +32,7 @@ fun getWaveAsString(id: Int) = when (id) {
 
 fun getTransmitter(id: Int): Transmitter = when (id) {
     R.id.radio_button_vibration -> VibrationTransmitter
+    R.id.radio_button_light     -> LightTransmitter
     else -> TODO()
 }
 

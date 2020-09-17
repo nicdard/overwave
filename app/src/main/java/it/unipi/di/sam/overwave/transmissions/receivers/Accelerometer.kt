@@ -46,7 +46,7 @@ class Accelerometer(
 
     private val THRESHOLD = BigDecimal(0.095).toDouble()
 
-    private val events: MutableList<SensorEvent> = mutableListOf()
+    private val events: MutableMap<Long, Float> = mutableMapOf()
 
     override fun start() {
         val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -70,17 +70,17 @@ class Accelerometer(
         var firstTimestamp: Long? = null
         val standardDevBySec = mutableMapOf<Float, RunningStats>()
 
-        for (event in events) {
+        for ((timestamp, z) in events) {
             if (firstTimestamp == null) {
-                firstTimestamp = event.timestamp
+                firstTimestamp = timestamp
             }
-            val decSeconds = ((event.timestamp - firstTimestamp) / 1000000000F)
+            val decSeconds = ((timestamp - firstTimestamp) / 1000000000F)
                 .toBigDecimal()
                 .setScale(1, RoundingMode.FLOOR)
                 .toFloat()
             standardDevBySec
                 .getOrPut(decSeconds) { RunningStats() }
-                .push(event.values[2].toBigDecimal())
+                .push(z.toBigDecimal())
         }
         val signal = processSignal(standardDevBySec)
         return parseSignal(signal)
@@ -129,7 +129,7 @@ class Accelerometer(
         when (event?.sensor?.type) {
             Sensor.TYPE_ACCELEROMETER -> {
                 // Produce the next element.
-                events.add(event)
+                events[event.timestamp] = event.values[2]
                 if (isRecorder) {
                     writer?.write(
                         String.format(
