@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="viewModel"
+            type="it.unipi.di.sam.overwave.receiver.ReceiveViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".receiver.ReceiveActivity"
+        android:padding="@dimen/layout_padding">
+
+        <Button
+            android:id="@+id/receive_start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_receive"
+            app:layout_constraintBaseline_toBaselineOf="@id/receive_stop_button"
+            app:layout_constraintEnd_toStartOf="@+id/receive_stop_button"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            android:onClick="@{() -> viewModel.onStartButtonClicked()}"
+            android:enabled="@{viewModel.isStartButtonEnabled}"
+            />
+
+        <Button
+            android:id="@+id/receive_stop_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/receive_start_button"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> viewModel.onStopButtonClicked()}"
+            android:enabled="@{viewModel.isReceiving}" />
+
+        <!-- <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/receive_horizontal_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.4" /> -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="@dimen/layout_padding"
+            app:layout_constraintBottom_toTopOf="@id/receive_clean_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/receive_stop_button"/>
+
+        <Button
+            android:id="@+id/receive_clean_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clean"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:onClick="@{() -> viewModel.clean()}"
+            android:enabled="@{viewModel.isCleanButtonEnabled}"/>
+
+        <!-- <TextView
+            android:id="@+id/receive_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/receive_horizontal_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@{viewModel.receivedText}"
+            /> -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

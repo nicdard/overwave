@@ -1,6 +1,35 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">overwave</string>
+    <string name="app_name">Overwave</string>
+    <string name="about">About</string>
+    <string name="button_receive">Receive</string>
+    <string name="button_transmit">Transmit</string>
+    <string name="button_start">Start</string>
+    <string name="help">How to use</string>
+    <string name="about_app">Wireless communication between phones using light, vibration or sound.\n\nFor example it can use LED flashlight as a transmitter and the ambient light sensor as the corresponding receiver.</string>
+    <string name="help_content">- Insert a text and click transfer.\n\n- On receiving side, click receive and stop just after the end of the transmission. You will see all the decoded messages logged into a list, just long-click an item to copy the message to the clipboard.</string>
+    <string name="contact">Contact</string>
+    <string name="contact_content">
+    i.dardanis@studenti.unipi.it
+    </string>
+    <string name="enter_text">Message</string>
+    <string name="splash_description">Splash Screen</string>
+    <string name="cancel">Cancel</string>
+    <string name="stop">Stop</string>
+    <string name="insert_text">Insert a text to transmit:</string>
+    <string name="receiver">receiver</string>
+    <string name="transmitter">transmitter</string>
 
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync devices via bluetooth</string>
+    <string name="settings">Settings</string>
+
+    <!-- Bluetooth -->
     <!--  DeviceListActivity -->
     <string name="scanning">Scanning for devices…</string>
     <string name="select_device">Select a device to connect</string>
@@ -9,31 +38,14 @@
     <string name="title_paired_devices">Paired Devices</string>
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
+    <string name="frequency_settings">Transmitter\'s frequency in milliseconds</string>
+    <string name="data_preference_title">Data</string>
 
-    <!-- Bluetooth service -->
+    <!-- Bluetooth Service -->
     <string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string>
     <string name="title_connecting">connecting…</string>
     <string name="title_not_connected">not connected</string>
-    <string name="bluetooth_not_available">Bluetooth not found, switching to manual configuration</string>
-
-    <!-- Receiver Activity -->
-    <string name="switch_enable_bluetooth_text">Auto-detect transmission</string>
-    <string name="switch_enable_bluetooth_textOn">The device receives the configuration for an incoming transmission through bluetooth and automatically listens for incoming data</string>
-    <string name="switch_enable_bluetooth_textOff">Please manually configure the transmission to listen for and start the receiver before the transmitter</string>
-    <string name="receive">Receive</string>
-
-    <!-- Transmission Configuration -->
-    <string name="select_wave">Select a wave type:</string>
-    <string name="vibration">Vibration</string>
-    <string name="sound">Sound</string>
-    <string name="light">Light</string>
-    <string name="insert_sampling_rate">Insert a sampling rate:</string>
-
-    <!-- Transmitter Activity -->
-    <string name="switch_enable_bluetooth_pairing_text">Auto-pair devices</string>
-    <string name="insert_text_to_transmit">Insert a text to transmit:</string>
-    <string name="send">send</string>
-    <string name="insert_number_trials">Insert the number of trials</string>
-    <string name="insert_transmitter_frequency">Insert transmitter frequency:</string>
+    <string name="bluetooth_not_available">Bluetooth not found, you cannot use auto-sync and lab features.</string>
+    <string name="clean">clean</string>
 
 </resources>

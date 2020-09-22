@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="it.unipi.di.sam.overwave">
+    <!-- flash light -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="true" /> <!-- luminosity sensor to receive flash light transmissions -->
+    <uses-feature android:name="android.hardware.sensor.light" />
 
+    <!-- vibration -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Bluetooth -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- Used to store CSV files of data sampling. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -15,36 +28,44 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:name="it.unipi.di.sam.overwave.SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name="it.unipi.di.sam.overwave.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="it.unipi.di.sam.overwave.MainActivity" />
+        <activity android:name="it.unipi.di.sam.overwave.transmitter.TransmitActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="it.unipi.di.sam.overwave.AboutActivity"
+            android:label="@string/about" />
+        <activity android:name="it.unipi.di.sam.overwave.receiver.ReceiveActivity" />
 
         <activity
-            android:name=".ReceiverActivity"
-            android:label="@string/app_name" />
-
-        <activity
-            android:name=".TransmitterActivity"
-            android:label="@string/app_name" />
-
-        <activity
-            android:name=".transmissions.bluetooth.DeviceListDialogActivity"
+            android:name="it.unipi.di.sam.overwave.bluetooth.DeviceListDialogActivity"
             android:label="@string/select_device"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-
     </application>
 
 </manifest>

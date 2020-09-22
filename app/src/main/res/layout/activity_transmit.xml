@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+        <variable
+            name="viewModel"
+            type="it.unipi.di.sam.overwave.transmitter.TransmitViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".transmitter.TransmitActivity"
+        android:padding="@dimen/layout_padding" >
+
+        <SurfaceView
+            android:id="@+id/surface_view"
+            android:layout_width="0px"
+            android:layout_height="0px"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_transmit"
+            app:layout_constraintBaseline_toBaselineOf="@id/stop_button"
+            app:layout_constraintEnd_toStartOf="@+id/stop_button"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            android:onClick="@{() -> viewModel.startTransmitter()}"
+            android:enabled="@{viewModel.startButtonVisible}"
+            />
+
+        <Button
+            android:id="@+id/stop_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/start_button"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> viewModel.stopTransmitter()}"
+            android:enabled="@{viewModel.stopButtonVisible}"
+            />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/transmit_horizontal_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.4" />
+
+        <LinearLayout
+            android:id="@+id/insert_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="@id/transmit_horizontal_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+           <TextView
+                android:id="@+id/label_edit_text_insert_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/insert_text"
+                android:labelFor="@id/edit_text_insert_text"
+                android:enabled="@{viewModel.startButtonVisible}"
+                android:padding="16dp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal" />
+            <EditText
+                android:id="@+id/edit_text_insert_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:enabled="@{viewModel.startButtonVisible}"
+                android:text="" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/transmit_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="false"
+            android:max="100"
+            android:minHeight="50dp"
+            android:minWidth="200dp"
+            android:progress="@{viewModel.progressStatus}"
+            android:enabled="@{viewModel.stopButtonVisible}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+             />
+
+        <!-- <TextView
+            android:id="@+id/textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:minWidth="200dp"
+            android:enabled="@{viewModel.startButtonVisible}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" /> -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

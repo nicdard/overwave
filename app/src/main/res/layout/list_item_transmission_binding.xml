@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="transmission"
+            type="it.unipi.di.sam.overwave.database.Transmission" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/wave_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="start"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/little_padding"
+            android:scaleType="center"
+            app:waveImage="@{transmission}"
+            tools:src="@drawable/light"
+            />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/little_padding">
+            <TextView
+                android:id="@+id/decoded_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/wave_image"
+                android:layout_toRightOf="@id/wave_image"
+                app:layout_constraintStart_toEndOf="@id/wave_image"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="20sp"
+                tools:text="ciao"
+                android:text="@{transmission.decodedMessage}"
+                />
+            <TextView
+                android:id="@+id/sent_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/wave_image"
+                android:layout_toRightOf="@id/wave_image"
+                app:layout_constraintStart_toEndOf="@id/wave_image"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="20sp"
+                tools:text="transmitted: ciao"
+                app:sentText="@{transmission}"
+                app:isSentTextVisible="@{transmission}"
+                />
+            <TextView
+                android:id="@+id/elapsed_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/wave_image"
+                android:layout_toRightOf="@id/wave_image"
+                app:layout_constraintTop_toBottomOf="@id/decoded_text"
+                app:layout_constraintStart_toEndOf="@id/wave_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:elapsedTime="@{transmission}"
+                tools:text="12s"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/wave_image"
+                android:layout_toRightOf="@id/wave_image"
+                app:layout_constraintTop_toBottomOf="@id/elapsed_time"
+                app:layout_constraintStart_toEndOf="@id/wave_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:date="@{transmission}"
+                tools:text="date"
+                android:textSize="16sp"
+                />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/messages_header">
+
+        <ListPreference
+            app:key="wave_list"
+            app:title="Wave"
+            app:entries="@array/waves"
+            app:entryValues="@array/waves"
+            app:defaultValue="light"
+            >
+        </ListPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/sync_title" />
+        <EditTextPreference
+            app:key="frequency"
+            app:title="@string/frequency_settings"
+            app:dependency="sync"
+            android:inputType="number"
+            app:summary="Configures a frequency which will be used to send and retrieve messages. This feature is allowed only with bluetooth since the app will take care to handle the handshake between devices."
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="50" />
+        <EditTextPreference
+            app:key="trials"
+            app:title="Transmissions per experiment"
+            app:dependency="sync"
+            android:inputType="number"
+            app:summary="Configures how many times the same transmission is repeated. This can be useful to gather data to be analysed afterwords."
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="2" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/data_preference_title">
+
+        <SwitchPreferenceCompat
+            app:key="data_CSV"
+            app:title="Log raw events to CSV files"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
