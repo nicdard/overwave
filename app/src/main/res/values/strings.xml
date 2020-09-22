@@ -48,4 +48,8 @@
     <string name="bluetooth_not_available">Bluetooth not found, you cannot use auto-sync and lab features.</string>
     <string name="clean">clean</string>
 
+    <!-- waves -->
+    <string name="light">light</string>
+    <string name="sound">sound</string>
+    <string name="vibration">vibration</string>
 </resources>

@@ -103,8 +103,8 @@ class Preferences(context: Context) {
         get() = sharedPreferences.getBoolean(KEY_BLUETOOTH, false)
     val frequency: Int
         get() = try {
-            sharedPreferences.getString(KEY_FREQUENCY, DEFAULT_FREQUENCY.toString())!!.toInt()
-        } catch (e: Exception) { DEFAULT_FREQUENCY }
+            sharedPreferences.getString(KEY_FREQUENCY, getDefaultFrequency(this.wave).toString())!!.toInt()
+        } catch (e: Exception) { getDefaultFrequency(this.wave) }
     val trials: Int
         get() = try {
             sharedPreferences.getString(KEY_TRIALS, "2")!!.toInt()

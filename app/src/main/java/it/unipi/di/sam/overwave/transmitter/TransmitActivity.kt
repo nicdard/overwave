@@ -17,6 +17,7 @@ import it.unipi.di.sam.overwave.BaseMenuActivity
 import it.unipi.di.sam.overwave.R
 import it.unipi.di.sam.overwave.actuators.IActuator
 import it.unipi.di.sam.overwave.actuators.TorchActuator
+import it.unipi.di.sam.overwave.actuators.VibrationActuator
 import it.unipi.di.sam.overwave.bluetooth.*
 import it.unipi.di.sam.overwave.databinding.ActivityTransmitBinding
 import it.unipi.di.sam.overwave.utils.Preferences
@@ -42,10 +43,15 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
             TransmitViewModelFactory(preferences)
         }
         actuator = when (preferences.wave) {
-            "light" -> TorchActuator(
+            getString(R.string.light) -> TorchActuator(
                 binding.surfaceView.holder,
                 preferences.shouldSaveRawData,
                 getExternalFilesDir(null)?.absolutePath,
+            )
+            getString(R.string.vibration) -> VibrationActuator(
+                applicationContext,
+                preferences.shouldSaveRawData,
+                getExternalFilesDir(null)?.absolutePath
             )
             else -> TODO("implement")
         }

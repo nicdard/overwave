@@ -18,8 +18,9 @@ import it.unipi.di.sam.overwave.database.TransmissionDatabase
 import it.unipi.di.sam.overwave.databinding.ActivityReceiveBinding
 import it.unipi.di.sam.overwave.sensors.ISensor
 import it.unipi.di.sam.overwave.sensors.LuminositySensor
-import it.unipi.di.sam.overwave.utils.DEFAULT_FREQUENCY
+import it.unipi.di.sam.overwave.sensors.VibrationSensor
 import it.unipi.di.sam.overwave.utils.Preferences
+import it.unipi.di.sam.overwave.utils.getDefaultFrequency
 import kotlinx.coroutines.*
 
 class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
@@ -45,7 +46,16 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         sensor = when (preferences.wave) {
-            "light" -> LuminositySensor(application.getSystemService(SENSOR_SERVICE) as SensorManager)
+            getString(R.string.light) -> LuminositySensor(
+                application.getSystemService(
+                    SENSOR_SERVICE
+                ) as SensorManager
+            )
+            getString(R.string.vibration) -> VibrationSensor(
+                application.getSystemService(
+                    SENSOR_SERVICE
+                ) as SensorManager
+            )
             else -> TODO("implement ${preferences.wave}")
         }
         storageDir = getExternalFilesDir(null)?.absolutePath
@@ -84,7 +94,7 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         sentText: String? = null
     ) {
         sensor.activate()
-        binding.viewModel!!.startReceive(wave, frequency)
+        binding.viewModel!!.startReceive(wave, frequency, sentText)
     }
 
     private suspend fun processEndedTransmission(frequency: Int = preferences.frequency) {
@@ -108,6 +118,7 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
      */
     private fun isDiscoverable(): Boolean =
         bluetoothAdapter?.scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
+
     /**
      * Makes this device discoverable for 300 seconds (5 minutes).
      * Note: This request automatically enables the Bluetooth,
@@ -164,7 +175,7 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
      * The Handler that gets information back from the [BluetoothSyncService].
      */
     private val mHandler: Handler = object : Handler(Looper.getMainLooper()) {
-        var frequency: Int = DEFAULT_FREQUENCY
+        var frequency: Int = 50
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 MESSAGE_READ -> {
@@ -184,22 +195,37 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                                 val wave = configMap[KEY_WAVE]
                                 // Used for data gathering purposes.
                                 val text = configMap[KEY_TEXT]
-                                frequency = try {
-                                    configMap[KEY_FREQUENCY]!!.toInt()
-                                } catch (e: Exception) {
-                                    DEFAULT_FREQUENCY
-                                }
                                 if (wave != null) {
+                                    frequency = try {
+                                        configMap[KEY_FREQUENCY]!!.toInt()
+                                    } catch (e: Exception) {
+                                        getDefaultFrequency(wave)
+                                    }
                                     processStartedTransmission(wave, frequency)
-                                    bluetoothSyncService!!.write(composeResponse(ACK, START_TRANSMISSION))
+                                    bluetoothSyncService!!.write(
+                                        composeResponse(
+                                            ACK,
+                                            START_TRANSMISSION
+                                        )
+                                    )
                                 } else {
-                                    bluetoothSyncService!!.write(composeResponse(NACK, START_TRANSMISSION))
+                                    bluetoothSyncService!!.write(
+                                        composeResponse(
+                                            NACK,
+                                            START_TRANSMISSION
+                                        )
+                                    )
                                 }
                             }
                             END_TRANSMISSION -> {
                                 launch {
                                     processEndedTransmission(frequency)
-                                    bluetoothSyncService!!.write(composeResponse(ACK, END_TRANSMISSION))
+                                    bluetoothSyncService!!.write(
+                                        composeResponse(
+                                            ACK,
+                                            END_TRANSMISSION
+                                        )
+                                    )
                                 }
                             }
                             END_TRIALS -> {
@@ -209,7 +235,12 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                                     bluetoothSyncService!!.stop()
                                 }
                             }
-                            else -> bluetoothSyncService!!.write(composeResponse(NACK, lines.elementAt(0)))
+                            else -> bluetoothSyncService!!.write(
+                                composeResponse(
+                                    NACK,
+                                    lines.elementAt(0)
+                                )
+                            )
                         }
                     } catch (e: Exception) {
                         bluetoothSyncService!!.write((NACK + '\n' + e.message).toByteArray())
@@ -257,58 +288,4 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         @JvmStatic
         fun log(message: String) = Log.e(DEBUG_TAG, message)
     }
-
-    /*
-    in onCreate
-     // binding.viewModel = viewModel
-        // binding.lifecycleOwner = this
-        /* viewModel.isStopButtonVisible.observe(this, {
-            if (it) {
-                try {
-                    this.coroutineContext.cancelChildren()
-                } catch (e: CancellationException) {
-                }
-                if (preferences.useBluetooth) {
-                    // The sensor will be started by the transmitter.
-                    log("ensure discoverable called, device ${isDiscoverable()}")
-                    ensureDiscoverable()
-                } else {
-                    sensor.activate()
-                }
-            } else {
-                // launch { stop() }
-                // mBluetoothSyncService?.stop()
-                // bluetoothAdapter?.disable()
-                if (!bluetoothOngoing) {
-                    mBluetoothSyncService?.stop()
-                    bluetoothAdapter?.disable()
-                }
-            }
-        })
-        */
-     */
-
-    /*
-  private suspend fun stop(frequency: Int = /*binding.viewModel!!.*/preferences.frequency) {
-      sensor.stop()
-      if (/*binding.viewModel!!.*/preferences.shouldSaveRawData) {
-          withContext(Dispatchers.IO) {
-              sensor.writeRawData(application.getExternalFilesDir(null)!!.absolutePath)
-          }
-      }
-      val text = sensor.decodeSignal(frequency)
-      withContext(Dispatchers.Main) {
-          Toast.makeText(this@ReceiveActivity, text, Toast.LENGTH_SHORT).show()
-      }
-      // binding.viewModel!!.receivedText.value = text
-      if (/*binding.viewModel!!.*/preferences.useBluetooth) {
-          bluetoothSyncService?.write(
-              composeResponse(
-                  ACK,
-                  END_TRANSMISSION
-              )
-          )
-      }
-  }
-  */
 }

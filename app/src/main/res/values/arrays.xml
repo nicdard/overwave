@@ -1,8 +1,8 @@
 <resources>
     <!-- Wave Preference -->
     <string-array name="waves">
-        <item>light</item>
-        <item>vibration</item>
-        <item>sound</item>
+        <item>@string/light</item>
+        <item>@string/sound</item>
+        <item>@string/vibration</item>
     </string-array>
 </resources>

@@ -127,4 +127,8 @@ class TorchActuator(
     override fun surfaceDestroyed(holder: SurfaceHolder) {}
 
     override fun neededPermissions() = arrayOf(Manifest.permission.CAMERA)
+
+    companion object {
+        const val DEFAULT_FREQUENCY = 50
+    }
 }

@@ -1,5 +1,8 @@
 package it.unipi.di.sam.overwave.utils
 
+import it.unipi.di.sam.overwave.actuators.TorchActuator
+import it.unipi.di.sam.overwave.actuators.VibrationActuator
+
 const val START = "11110101"
 private const val END = "10"
 
@@ -23,7 +26,8 @@ fun decode(signal: String) = signal
     .map { it.toInt(2).toChar() }
     .joinToString("")
 
-/**
- * The default frequency in milliseconds.
- */
-const val DEFAULT_FREQUENCY = 50
+fun getDefaultFrequency(wave: String) = when(wave) {
+    "light" -> TorchActuator.DEFAULT_FREQUENCY
+    "vibration" -> VibrationActuator.DEFAULT_FREQUENCY
+    else -> TODO("sound frequency missing")
+}

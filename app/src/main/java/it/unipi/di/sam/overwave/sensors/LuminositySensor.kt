@@ -12,15 +12,6 @@ import java.io.File
 import java.io.FileWriter
 import java.math.BigDecimal
 
-/**
- * Empirical measured threshold.
- */
-const val ERROR_THRESHOLD = 400
-/**
- * The empirical measured flash light on/off latency in milliseconds.
- */
-const val FLASH_LATENCY = 8
-
 data class LuminosityData(val timestamp: Long, val intensity: Long)
 
 class LuminositySensor(
@@ -34,7 +25,7 @@ class LuminositySensor(
         sensorManager?.registerListener(
             this,
             sensorManager?.getDefaultSensor(Sensor.TYPE_LIGHT),
-            30
+            SAMPLING_PERIOD
         )
     }
 
@@ -115,6 +106,14 @@ class LuminositySensor(
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     companion object {
-        val NAME = "light"
+        private const val SAMPLING_PERIOD = 30
+        /**
+         * Empirical measured threshold.
+         */
+        private const val ERROR_THRESHOLD = 400
+        /**
+         * The empirical measured flash light on/off latency in milliseconds.
+         */
+        private const val FLASH_LATENCY = 8
     }
 }

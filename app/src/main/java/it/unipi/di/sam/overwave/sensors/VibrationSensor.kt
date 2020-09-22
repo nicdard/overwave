@@ -1,21 +1,120 @@
 package it.unipi.di.sam.overwave.sensors
 
-import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.Build
-import kotlinx.coroutines.*
+import it.unipi.di.sam.overwave.utils.RunningStats
+import it.unipi.di.sam.overwave.utils.decode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileWriter
 import java.math.BigDecimal
-import java.math.RoundingMode
-import kotlin.Exception
 
-private const val NOISE_16_BIT = "0000000000000000"
-private const val TAG = "[Accelerometer]"
+data class VibrationData(val timestamp: Long, val z: Float)
 
+class VibrationSensor(
+    private var sensorManager: SensorManager?
+) : ISensor, SensorEventListener {
+
+    private val samples = mutableListOf<VibrationData>()
+
+    override fun activate() {
+        samples.clear()
+        sensorManager?.registerListener(
+            this,
+            sensorManager?.getDefaultSensor(Sensor.TYPE_LIGHT),
+            SAMPLING_PERIOD
+        )
+    }
+
+    override suspend fun writeRawData(path: String) {
+        if (samples.isNotEmpty()) {
+            withContext(Dispatchers.IO) {
+                try {
+                    FileWriter(File(path, "vibration" + System.currentTimeMillis() + ".csv")).use {
+                        for (sample in samples) {
+                            it.write(String.format("%d; %d\n", sample.timestamp, sample.z))
+                        }
+                    }
+                } catch (e: Exception) { }
+            }
+        }
+    }
+
+    override suspend fun decodeSignal(transmitterFrequency: Int): String {
+        var decoded = ""
+        if (samples.isNotEmpty()) {
+            withContext(Dispatchers.Default) {
+                // Calibrate.
+                val stats = RunningStats()
+                val intensities = samples.map { it.z }
+                val firstEnvironmentNoise = intensities[0] + ERROR_THRESHOLD
+                stats.push(intensities.minOrNull()!!.toBigDecimal())
+                stats.push(intensities.maxOrNull()!!.toBigDecimal())
+                val minMaxMean = stats.mean().toLong()
+                val _samples: MutableList<VibrationData> =
+                    samples.dropWhile { it.z < firstEnvironmentNoise }.toMutableList()
+                // Group by frequency(with error considerations) and calculate mean.
+                // TODO should be done with a sequence or told by the transmitter via bluetooth.
+                val delayedFrequency = (transmitterFrequency + VIBRATOR_LATENCY) * 1000000
+                val sampleMeanByFrequency = mutableMapOf<String, BigDecimal>()
+                while (isActive && _samples.isNotEmpty()) {
+                    val intervalStartTimestamp = _samples[0].timestamp
+                    stats.clear()
+                    // Compute the interval
+                    var data: VibrationData
+                    do {
+                        data = _samples[0]
+                        stats.push(data.z.toBigDecimal())
+                        _samples.removeAt(0)
+                    } while (isActive && (data.timestamp - intervalStartTimestamp) <= delayedFrequency && _samples.isNotEmpty())
+                    sampleMeanByFrequency["$intervalStartTimestamp + ${data.timestamp}"] = stats.mean()
+                }
+                val threshold = minMaxMean.toBigDecimal()
+                val bits = sampleMeanByFrequency.entries
+                    .sortedBy { it.key }
+                    .map { if (it.value > threshold) '1' else '0' }
+                    .joinToString(separator = "")
+                decoded = decode(bits)
+            }
+        }
+        samples.clear()
+        return decoded
+    }
+
+    override fun stop() {
+        sensorManager?.unregisterListener(this)
+    }
+
+    override fun dispose() {
+        stop()
+        // Just to be sure.
+        sensorManager = null
+        samples.clear()
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        when (event?.sensor?.type) {
+            Sensor.TYPE_ACCELEROMETER -> {
+                samples.add(VibrationData(event.timestamp, event.values[0]))
+            }
+        }
+    }
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+    companion object {
+        private const val SAMPLING_PERIOD = 10
+
+        private const val ERROR_THRESHOLD = 0.005
+
+        private const val VIBRATOR_LATENCY = 3
+        @JvmStatic
+        private val THRESHOLD = BigDecimal(0.095).toDouble()
+    }
+}
 /*
 class Accelerometer(
     context: Context,
