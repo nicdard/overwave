@@ -20,6 +20,7 @@ interface IActuator {
 
     /**
      * Frees resources and prepare the object for deactivation.
+     * However it can be re-initialised by calling [initialise]
      */
     fun dispose()
 

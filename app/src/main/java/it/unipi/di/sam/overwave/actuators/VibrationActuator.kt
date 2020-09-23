@@ -6,6 +6,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import it.unipi.di.sam.overwave.R
 import it.unipi.di.sam.overwave.transmitter.TransmitViewModel
 import it.unipi.di.sam.overwave.utils.dataToBinaryString
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,7 @@ import java.io.File
 import java.io.FileWriter
 
 class VibrationActuator(
-    private val context: Context? = null,
+    private val context: Context,
     private val shouldSaveRawData: Boolean = false,
     private val storageDir: String?,
 ) : IActuator {
@@ -27,7 +28,6 @@ class VibrationActuator(
         set(value) = synchronized(this@VibrationActuator) { field = value}
 
     override fun initialise() {
-        if (context == null) return
         if (shouldSaveRawData && storageDir != null && writer == null) {
             writer = try {
                 FileWriter(File(storageDir, "vibrator" + System.currentTimeMillis() + ".csv"))
@@ -80,7 +80,7 @@ class VibrationActuator(
                 }
             }
         } else {
-            Toast.makeText(context, "Couldn't find a Vibrator to transmit the data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.missing_vibrator), Toast.LENGTH_SHORT).show()
         }
     }
 

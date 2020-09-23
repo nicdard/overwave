@@ -27,7 +27,7 @@ import kotlinx.coroutines.*
 class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
 
     private lateinit var binding: ActivityTransmitBinding
-    private lateinit var actuator: IActuator
+    private var actuator: IActuator? = null
     private lateinit var preferences: Preferences
 
     private var mBluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
@@ -40,30 +40,15 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         binding = ActivityTransmitBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        preferences = Preferences.getInstance(applicationContext)
-        val viewModel: TransmitViewModel by viewModels {
-            TransmitViewModelFactory(preferences)
-        }
-        actuator = when (preferences.wave) {
-            getString(R.string.light) -> TorchActuator(
-                binding.surfaceView.holder,
-                preferences.shouldSaveRawData,
-                getExternalFilesDir(null)?.absolutePath,
-            )
-            getString(R.string.vibration) -> VibrationActuator(
-                applicationContext,
-                preferences.shouldSaveRawData,
-                getExternalFilesDir(null)?.absolutePath
-            )
-            else -> TODO("implement")
-        }
+        preferences = Preferences.getInstance(application)
+        val viewModel: TransmitViewModel by viewModels()
         binding.viewModel = viewModel
         viewModel.isStarted.observe(this, {
             if (!it) {
                 try {
                     this.coroutineContext.cancelChildren()
                 } catch (e: CancellationException) { }
-                actuator.dispose()
+                actuator?.dispose()
                 // Reset the progress bar to zero.
                 viewModel.publishProgress(0)
                 // Reset trials to zero.
@@ -78,11 +63,6 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                 }
             }
         })
-        if (!hasPermissions()) {
-            requestPermission()
-        } else {
-            onPermissionGranted()
-        }
         when (intent?.action) {
             Intent.ACTION_SEND -> {
                 if ("text/plain" == intent.type) {
@@ -92,46 +72,72 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         }
         setContentView(binding.root)
     }
-
-    private fun startTransmission(frequency: Int = getDefaultFrequency(preferences.wave)) {
-        val data = binding.editTextInsertText.text.toString().toByteArray()
-        launch(Dispatchers.IO) {
-            actuator.initialise()
-            actuator.transmit(data, frequency, binding.viewModel!!)
-            if (preferences.useBluetooth) {
-                mBluetoothSyncService?.write(END_TRANSMISSION.toByteArray())
-            } else {
-                withContext(Dispatchers.Main) {
-                    binding.viewModel!!.stopTransmitter()
-                }
-            }
-        }
-    }
-
-
     private fun handleSendText(intent: Intent) {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
             binding.editTextInsertText.setText(it)
         }
     }
 
+    private fun startTransmission(frequency: Int = getDefaultFrequency(preferences.wave)) {
+        val data = binding.editTextInsertText.text.toString().toByteArray()
+        actuator?.let {
+            launch(Dispatchers.IO) {
+                it.initialise()
+                it.transmit(data, frequency, binding.viewModel!!)
+                if (preferences.useBluetooth) {
+                    mBluetoothSyncService?.write(END_TRANSMISSION.toByteArray())
+                } else {
+                    withContext(Dispatchers.Main) {
+                        binding.viewModel!!.stopTransmitter()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        actuator = when (preferences.wave) {
+            getString(R.string.light) -> TorchActuator(
+                binding.surfaceView.holder,
+                preferences.shouldSaveRawData,
+                getExternalFilesDir(null)?.absolutePath,
+            )
+            getString(R.string.vibration) -> VibrationActuator(
+                applicationContext,
+                preferences.shouldSaveRawData,
+                getExternalFilesDir(null)?.absolutePath
+            )
+            else -> TODO("implement")
+        }
+        if (!hasPermissions()) {
+            requestPermission()
+        } else {
+            onPermissionGranted()
+        }
+    }
+
+    override fun onStop() {
+        actuator?.dispose()
+        actuator = null
+        binding.viewModel!!.stopTransmitter()
+        super.onStop()
+    }
+
     override fun onDestroy() {
-        super.onDestroy()
-        mBluetoothSyncService?.stop()
-        binding.viewModel?.stopTransmitter()
-        actuator.dispose()
         cancel()
+        super.onDestroy()
     }
 
     private fun hasPermissions(): Boolean {
-        return actuator.neededPermissions().all {
+        return actuator!!.neededPermissions().all {
             (ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED)
         }
     }
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
             this,
-            actuator.neededPermissions(),
+            actuator!!.neededPermissions(),
             PERMISSIONS_REQUEST
         )
     }
@@ -218,7 +224,7 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         mBluetoothSyncService!!.connect(device)
     }
     /**
-     * Parses a [Message] from the `server` application.
+     * Parses a [Message] from the receiver application.
      */
     private fun parseResponse(message: Message) {
         val readBuf = message.obj as ByteArray
@@ -235,17 +241,15 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                 }
                 END_TRANSMISSION -> {
                     if (trialsCounter == 0) {
-                        Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show()
                         mBluetoothSyncService!!.write(END_TRIALS.toByteArray())
                         binding.viewModel?.stopTransmitter()
                     } else {
-                        Toast.makeText(this, "Next", Toast.LENGTH_SHORT).show()
                         sendTransmissionInfoBT()
                     }
                 }
             }
         } else {
-            Toast.makeText(this, "Receiver device experienced an error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.bluetooth_device_error), Toast.LENGTH_SHORT).show()
             binding.viewModel!!.stopTransmitter()
         }
     }
@@ -271,17 +275,12 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                     val name = msg.data.getString(DEVICE_NAME)
                     Toast.makeText(
                         this@TransmitActivity,
-                        "Connected to $name",
+                        getString(R.string.title_connected_to, name),
                         Toast.LENGTH_SHORT
                     ).show()
                     trialsCounter = preferences.trials
                     sendTransmissionInfoBT()
                 }
-                MESSAGE_TOAST -> Toast.makeText(
-                    this@TransmitActivity,
-                    msg.data.getString(TOAST),
-                    Toast.LENGTH_SHORT
-                ).show()
                 MESSAGE_DISCONNECTED -> {
                     binding.viewModel?.stopTransmitter()
                     Toast.makeText(

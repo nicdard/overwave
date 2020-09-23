@@ -32,7 +32,7 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
     }
     private lateinit var preferences: Preferences
 
-    private lateinit var sensor: ISensor
+    private var sensor: ISensor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,20 +44,13 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         }
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        sensor = when (preferences.wave) {
-            getString(R.string.light) -> LuminositySensor(
-                application.getSystemService(
-                    SENSOR_SERVICE
-                ) as SensorManager
-            )
-            getString(R.string.vibration) -> VibrationSensor(
-                application.getSystemService(
-                    SENSOR_SERVICE
-                ) as SensorManager
-            )
-            else -> TODO("implement ${preferences.wave}")
+        val adapter = TransmissionPagedListAdapter()
+        binding.recyclerView.let {
+            it.setHasFixedSize(true)
+            it.layoutManager = LinearLayoutManager(this)
+            it.adapter = adapter
         }
-        viewModel.isReceiving.observe(this, {
+        binding.viewModel!!.isReceiving.observe(this, {
             if (it) {
                 if (preferences.useBluetooth) {
                     ensureDiscoverable()
@@ -72,12 +65,6 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                 }
             }
         })
-        val adapter = TransmissionPagedListAdapter()
-        binding.recyclerView.let {
-            it.setHasFixedSize(true)
-            it.layoutManager = LinearLayoutManager(this)
-            it.adapter = adapter
-        }
         viewModel.transmissions.observe(this, {
             it?.let {
                 adapter.submitList(it)
@@ -86,29 +73,58 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         setContentView(binding.root)
     }
 
+    override fun onStart() {
+        sensor = getCurrentSensor()
+        super.onStart()
+    }
+
+    override fun onStop() {
+        sensor?.dispose()
+        sensor = null
+        binding.viewModel!!.onStopButtonClicked()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        cancel()
+        super.onDestroy()
+    }
+
+    private fun getCurrentSensor(wave: String = preferences.wave) = when (wave) {
+        getString(R.string.light) -> LuminositySensor(
+            application.getSystemService(
+                SENSOR_SERVICE
+            ) as SensorManager
+        )
+        getString(R.string.vibration) -> VibrationSensor(
+            application.getSystemService(
+                SENSOR_SERVICE
+            ) as SensorManager
+        )
+        else -> TODO("implement ${preferences.wave}")
+    }
+
+
     private fun processStartedTransmission(
         wave: String = preferences.wave,
         frequency: Int = preferences.frequency,
         sentText: String? = null
     ) {
-        sensor.activate()
-        binding.viewModel!!.startReceive(wave, frequency, sentText)
+        sensor?.run {
+            activate()
+            binding.viewModel!!.startReceive(wave, frequency, sentText)
+        }
     }
 
     private suspend fun processEndedTransmission(frequency: Int = getDefaultFrequency(preferences.wave)) {
-        sensor.stop()
-        if (preferences.shouldSaveRawData) {
-            sensor.writeRawData(application.getExternalFilesDir(null)?.absolutePath)
+        sensor?.run {
+            stop()
+            if (preferences.shouldSaveRawData) {
+                writeRawData(application.getExternalFilesDir(null)?.absolutePath)
+            }
+            val text = decodeSignal(frequency)
+            binding.viewModel!!.stopReceive(text)
         }
-        val text = sensor.decodeSignal(frequency)
-        binding.viewModel!!.stopReceive(text)
-    }
-
-    override fun onDestroy() {
-        cancel()
-        bluetoothSyncService?.stop()
-        // binding.viewModel?.stopReceive()
-        super.onDestroy()
     }
 
     /**
@@ -199,46 +215,22 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                                     } catch (e: Exception) {
                                         getDefaultFrequency(wave)
                                     }
-                                    processStartedTransmission(wave, frequency)
-                                    bluetoothSyncService!!.write(
-                                        composeResponse(
-                                            ACK,
-                                            START_TRANSMISSION
-                                        )
-                                    )
+                                    sensor?.dispose()
+                                    sensor = getCurrentSensor(wave)
+                                    processStartedTransmission(wave, frequency, text)
+                                    bluetoothSyncService!!.write(composeResponse(ACK, START_TRANSMISSION))
                                 } else {
-                                    bluetoothSyncService!!.write(
-                                        composeResponse(
-                                            NACK,
-                                            START_TRANSMISSION
-                                        )
-                                    )
+                                    bluetoothSyncService!!.write(composeResponse(NACK, START_TRANSMISSION))
                                 }
                             }
                             END_TRANSMISSION -> {
                                 launch {
                                     processEndedTransmission(frequency)
-                                    bluetoothSyncService!!.write(
-                                        composeResponse(
-                                            ACK,
-                                            END_TRANSMISSION
-                                        )
-                                    )
+                                    bluetoothSyncService!!.write(composeResponse(ACK, END_TRANSMISSION))
                                 }
                             }
-                            END_TRIALS -> {
-                                // binding.viewModel?.stopReceive()
-                                launch {
-                                    // processEndedTransmission(frequency)
-                                    bluetoothSyncService!!.stop()
-                                }
-                            }
-                            else -> bluetoothSyncService!!.write(
-                                composeResponse(
-                                    NACK,
-                                    lines.elementAt(0)
-                                )
-                            )
+                            END_TRIALS -> binding.viewModel!!.onStopButtonClicked()
+                            else -> bluetoothSyncService!!.write(composeResponse(NACK, lines.elementAt(0)))
                         }
                     } catch (e: Exception) {
                         bluetoothSyncService!!.write((NACK + '\n' + e.message).toByteArray())
@@ -247,24 +239,15 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                 }
                 MESSAGE_DEVICE_NAME -> {
                     log("Received ${msg.data.getString(DEVICE_NAME)}")
-                    // save the connected device's name
                     Toast.makeText(
                         this@ReceiveActivity,
                         "Connected to ${msg.data.getString(DEVICE_NAME)}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                MESSAGE_TOAST -> {
-                    log("Received ${msg.data.getString(TOAST)}")
-                    Toast.makeText(
-                        this@ReceiveActivity,
-                        msg.data.getString(TOAST),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
                 MESSAGE_DISCONNECTED -> {
                     log("Received disconnected")
-                    // binding.viewModel?.stopReceive()
+                    binding.viewModel?.onStopButtonClicked()
                     Toast.makeText(
                         this@ReceiveActivity,
                         msg.data.getString(TOAST),

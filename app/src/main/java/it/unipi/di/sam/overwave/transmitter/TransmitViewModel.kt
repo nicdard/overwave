@@ -2,7 +2,7 @@ package it.unipi.di.sam.overwave.transmitter
 
 import androidx.lifecycle.*
 
-class TransmitViewModel : ViewModel() {
+class TransmitViewModel  : ViewModel() {
 
     private val _progressStatus = MutableLiveData(0)
     val progressStatus: LiveData<Int>

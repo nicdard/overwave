@@ -18,8 +18,7 @@ import kotlin.Exception
  */
 const val MESSAGE_READ = 1
 const val MESSAGE_DEVICE_NAME = 2
-const val MESSAGE_TOAST = 3
-const val MESSAGE_DISCONNECTED = 4
+const val MESSAGE_DISCONNECTED = 3
 
 /**
  * Key names received from the BluetoothSyncService Handler
