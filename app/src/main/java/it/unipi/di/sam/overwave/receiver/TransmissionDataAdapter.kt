@@ -6,28 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import it.unipi.di.sam.overwave.database.Transmission
 import it.unipi.di.sam.overwave.databinding.ListItemTransmissionBindingBinding
 
-class TransmissionDataAdapter : ListAdapter<Transmission, ViewHolder>(TransmissionDiffCallback()) {
+class TransmissionPagedListAdapter : PagedListAdapter<Transmission, ViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
+        val item = getItem(position)!!
         holder.bind(item)
     }
-}
 
-class TransmissionDiffCallback : DiffUtil.ItemCallback<Transmission>() {
-    override fun areItemsTheSame(oldItem: Transmission, newItem: Transmission): Boolean {
-        return oldItem.id == newItem.id
-    }
-    override fun areContentsTheSame(oldItem: Transmission, newItem: Transmission): Boolean {
-        return oldItem == newItem
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Transmission>() {
+            override fun areItemsTheSame(oldItem: Transmission, newItem: Transmission): Boolean {
+                return oldItem.id == newItem.id
+            }
+            override fun areContentsTheSame(oldItem: Transmission, newItem: Transmission): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package it.unipi.di.sam.overwave.database
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -28,5 +29,5 @@ interface TransmissionDatabaseDao {
     fun getCurrent(): Transmission?
 
     @Query("SELECT * FROM transmissions_table ORDER BY id DESC")
-    fun getAllTransmissions(): LiveData<List<Transmission>>
+    fun getAllPaged(): DataSource.Factory<Int, Transmission>
 }

@@ -74,7 +74,7 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                 }
             }
         })
-        val adapter = TransmissionDataAdapter()
+        val adapter = TransmissionPagedListAdapter()
         binding.recyclerView.let {
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(this)
