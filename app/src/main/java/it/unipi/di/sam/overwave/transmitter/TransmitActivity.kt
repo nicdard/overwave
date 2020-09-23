@@ -154,7 +154,7 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                     onPermissionGranted()
                 } else {
                     log("Permission denied")
-                    Toast.makeText(this, "Without the camera, you will not be able to use this transmitter!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Without permissions, you will not be able to use this transmitter!", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
