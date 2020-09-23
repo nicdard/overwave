@@ -16,33 +16,8 @@ import java.math.BigDecimal
 data class VibrationData(val timestamp: Long, val z: Float)
 
 class VibrationSensor(
-    private var sensorManager: SensorManager?
-) : ISensor, SensorEventListener {
-
-    private val samples = mutableListOf<VibrationData>()
-
-    override fun activate() {
-        samples.clear()
-        sensorManager?.registerListener(
-            this,
-            sensorManager?.getDefaultSensor(Sensor.TYPE_LIGHT),
-            SAMPLING_PERIOD
-        )
-    }
-
-    override suspend fun writeRawData(path: String) {
-        if (samples.isNotEmpty()) {
-            withContext(Dispatchers.IO) {
-                try {
-                    FileWriter(File(path, "vibration" + System.currentTimeMillis() + ".csv")).use {
-                        for (sample in samples) {
-                            it.write(String.format("%d; %d\n", sample.timestamp, sample.z))
-                        }
-                    }
-                } catch (e: Exception) { }
-            }
-        }
-    }
+    sensorManager: SensorManager?
+) : BaseSensor<VibrationData>(sensorManager, SAMPLING_PERIOD) {
 
     override suspend fun decodeSignal(transmitterFrequency: Int): String {
         var decoded = ""
@@ -85,17 +60,6 @@ class VibrationSensor(
         return decoded
     }
 
-    override fun stop() {
-        sensorManager?.unregisterListener(this)
-    }
-
-    override fun dispose() {
-        stop()
-        // Just to be sure.
-        sensorManager = null
-        samples.clear()
-    }
-
     override fun onSensorChanged(event: SensorEvent?) {
         when (event?.sensor?.type) {
             Sensor.TYPE_ACCELEROMETER -> {
@@ -103,7 +67,11 @@ class VibrationSensor(
             }
         }
     }
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+    override fun performWriting(writer: FileWriter, sample: VibrationData) {
+        writer.write(String.format("%d; %d\n", sample.timestamp, sample.z))
+    }
+    override fun getRawFilename(): String = "vibration" + System.currentTimeMillis() + ".csv"
 
     companion object {
         private const val SAMPLING_PERIOD = 10

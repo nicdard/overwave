@@ -67,11 +67,12 @@ class VibrationActuator(
                     }
                     // Wait for an amount of time equal to the length of the pattern,
                     // this way the coroutine returns only after the transmission did complete.
-                    for (i in 0..payload.length step 3) {
+                    val length = payload.length
+                    for (i in 0..length step 3) {
                         if (!isActive) break
                         delay(frequency * 3L)
                         // In the meantime, update the UI so the user knows that something is going on.
-                        viewModel.publishProgress(i)
+                        viewModel.publishProgress(100 * i / length)
                     }
                     writer?.run {
                         write(String.format("end; %d \n", System.currentTimeMillis()))

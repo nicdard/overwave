@@ -15,45 +15,8 @@ import java.math.BigDecimal
 data class LuminosityData(val timestamp: Long, val intensity: Long)
 
 class LuminositySensor(
-    private var sensorManager: SensorManager?
-) : ISensor, SensorEventListener {
-
-    private val samples = mutableListOf<LuminosityData>()
-
-    override fun activate() {
-        samples.clear()
-        sensorManager?.registerListener(
-            this,
-            sensorManager?.getDefaultSensor(Sensor.TYPE_LIGHT),
-            SAMPLING_PERIOD
-        )
-    }
-
-    override suspend fun writeRawData(path: String) {
-        if (samples.isNotEmpty()) {
-            withContext(Dispatchers.IO) {
-                try {
-                    FileWriter(File(path, "light" + System.currentTimeMillis() + ".csv")).use {
-                        for (sample in samples) {
-                            it.write(String.format("%d; %d\n", sample.timestamp, sample.intensity))
-                        }
-                    }
-                } catch (e: Exception) {
-                }
-            }
-        }
-    }
-
-    override fun stop() {
-        sensorManager?.unregisterListener(this)
-    }
-
-    override fun dispose() {
-        stop()
-        // Just to be sure.
-        sensorManager = null
-        samples.clear()
-    }
+    sensorManager: SensorManager?
+) : BaseSensor<LuminosityData>(sensorManager, SAMPLING_PERIOD){
 
     override suspend fun decodeSignal(transmitterFrequency: Int): String {
         var decoded = ""
@@ -103,7 +66,11 @@ class LuminositySensor(
             }
         }
     }
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+    override fun performWriting(writer: FileWriter, sample: LuminosityData) {
+        writer.write(String.format("%d; %d\n", sample.timestamp, sample.intensity))
+    }
+    override fun getRawFilename(): String = "light" + System.currentTimeMillis() + ".csv"
 
     companion object {
         private const val SAMPLING_PERIOD = 30

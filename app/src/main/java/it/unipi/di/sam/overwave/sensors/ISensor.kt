@@ -14,7 +14,7 @@ interface ISensor {
     /**
      * Writes the raw samples to a CSV file only if some data has been gathered by the sensor.
      */
-    suspend fun writeRawData(path: String)
+    suspend fun writeRawData(path: String?)
 
     /**
      * Decodes the signal. Consumes all data collected up to this function call.

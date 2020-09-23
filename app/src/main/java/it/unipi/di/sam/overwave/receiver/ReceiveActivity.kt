@@ -31,14 +31,13 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         if (bluetoothAdapter != null) BluetoothSyncService(mHandler, bluetoothAdapter) else null
     }
     private lateinit var preferences: Preferences
-    private var storageDir: String? = null
 
     private lateinit var sensor: ISensor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityReceiveBinding.inflate(layoutInflater)
-        preferences = Preferences(applicationContext)
+        preferences = Preferences.getInstance(application)
         val database = TransmissionDatabase.getInstance(application).transmissionDatabaseDao
         val viewModel: ReceiveViewModel by viewModels {
             ReceiveViewModelFactory(database)
@@ -58,7 +57,6 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
             )
             else -> TODO("implement ${preferences.wave}")
         }
-        storageDir = getExternalFilesDir(null)?.absolutePath
         viewModel.isReceiving.observe(this, {
             if (it) {
                 if (preferences.useBluetooth) {
@@ -97,10 +95,10 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         binding.viewModel!!.startReceive(wave, frequency, sentText)
     }
 
-    private suspend fun processEndedTransmission(frequency: Int = preferences.frequency) {
+    private suspend fun processEndedTransmission(frequency: Int = getDefaultFrequency(preferences.wave)) {
         sensor.stop()
         if (preferences.shouldSaveRawData) {
-            sensor.writeRawData(application.getExternalFilesDir(null)!!.absolutePath)
+            sensor.writeRawData(application.getExternalFilesDir(null)?.absolutePath)
         }
         val text = sensor.decodeSignal(frequency)
         binding.viewModel!!.stopReceive(text)

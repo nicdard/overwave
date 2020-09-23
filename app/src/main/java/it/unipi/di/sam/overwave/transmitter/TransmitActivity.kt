@@ -21,12 +21,14 @@ import it.unipi.di.sam.overwave.actuators.VibrationActuator
 import it.unipi.di.sam.overwave.bluetooth.*
 import it.unipi.di.sam.overwave.databinding.ActivityTransmitBinding
 import it.unipi.di.sam.overwave.utils.Preferences
+import it.unipi.di.sam.overwave.utils.getDefaultFrequency
 import kotlinx.coroutines.*
 
 class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
 
     private lateinit var binding: ActivityTransmitBinding
     private lateinit var actuator: IActuator
+    private lateinit var preferences: Preferences
 
     private var mBluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private val mBluetoothSyncService: BluetoothSyncService? by lazy {
@@ -38,7 +40,7 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         super.onCreate(savedInstanceState)
         binding = ActivityTransmitBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        val preferences = Preferences(applicationContext)
+        preferences = Preferences.getInstance(applicationContext)
         val viewModel: TransmitViewModel by viewModels {
             TransmitViewModelFactory(preferences)
         }
@@ -91,12 +93,12 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         setContentView(binding.root)
     }
 
-    private fun startTransmission() {
+    private fun startTransmission(frequency: Int = getDefaultFrequency(preferences.wave)) {
         val data = binding.editTextInsertText.text.toString().toByteArray()
         launch(Dispatchers.IO) {
             actuator.initialise()
-            actuator.transmit(data, binding.viewModel!!.preferences.frequency, binding.viewModel!!)
-            if (binding.viewModel!!.preferences.useBluetooth) {
+            actuator.transmit(data, frequency, binding.viewModel!!)
+            if (preferences.useBluetooth) {
                 mBluetoothSyncService?.write(END_TRANSMISSION.toByteArray())
             } else {
                 withContext(Dispatchers.Main) {
@@ -229,7 +231,7 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
             when (command) {
                 START_TRANSMISSION -> {
                     // When the other device is ready start the transmission.
-                    startTransmission()
+                    startTransmission(preferences.frequency)
                 }
                 END_TRANSMISSION -> {
                     if (trialsCounter == 0) {
@@ -249,8 +251,8 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
     }
     private fun sendTransmissionInfoBT() {
         mBluetoothSyncService!!.write(composeStartTransmissionMessage(
-            binding.viewModel!!.preferences.wave,
-            binding.viewModel!!.preferences.frequency,
+            preferences.wave,
+            preferences.frequency,
             --trialsCounter,
             binding.editTextInsertText.text.toString()
         ).toByteArray())
@@ -272,7 +274,7 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                         "Connected to $name",
                         Toast.LENGTH_SHORT
                     ).show()
-                    trialsCounter = binding.viewModel!!.preferences.trials
+                    trialsCounter = preferences.trials
                     sendTransmissionInfoBT()
                 }
                 MESSAGE_TOAST -> Toast.makeText(
