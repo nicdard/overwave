@@ -31,7 +31,7 @@ fun TextView.setIsSentTextVisible(item: Transmission) {
 
 @BindingAdapter("sentText")
 fun TextView.setSentText(item: Transmission) {
-    this.text = if (item.sentMessage != null) "transmitted: ${item.sentMessage}" else ""
+    this.text = if (item.sentMessage != null) "expected: ${item.sentMessage}" else ""
 }
 
 @BindingAdapter("elapsedTime")

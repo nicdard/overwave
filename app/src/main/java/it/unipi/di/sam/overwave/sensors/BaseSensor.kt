@@ -3,6 +3,7 @@ package it.unipi.di.sam.overwave.sensors
 import android.hardware.Sensor
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -10,6 +11,7 @@ import java.io.FileWriter
 
 abstract class BaseSensor<T>(
     private var sensorManager: SensorManager?,
+    private val SENSOR_TYPE: Int,
     private val SAMPLING_PERIOD: Int
 ) : ISensor, SensorEventListener {
 
@@ -19,7 +21,7 @@ abstract class BaseSensor<T>(
         samples.clear()
         sensorManager?.registerListener(
             this,
-            sensorManager?.getDefaultSensor(Sensor.TYPE_LIGHT),
+            sensorManager?.getDefaultSensor(SENSOR_TYPE),
             SAMPLING_PERIOD
         )
     }
@@ -38,6 +40,7 @@ abstract class BaseSensor<T>(
     protected abstract fun performWriting(writer: FileWriter, sample: T)
     protected abstract fun getRawFilename(): String
     override suspend fun writeRawData(path: String?) {
+        Log.i("Vibration", "${path} ${samples.isNotEmpty()}")
         if (path != null && samples.isNotEmpty()) {
             withContext(Dispatchers.IO) {
                 try {

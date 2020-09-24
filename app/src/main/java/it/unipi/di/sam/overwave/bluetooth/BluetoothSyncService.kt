@@ -380,7 +380,7 @@ class BluetoothSyncService(
         const val STATE_CONNECTING = 2 // now initiating an outgoing connection
         const val STATE_CONNECTED = 3 // now connected to a remote device
 
-        const val DEBUG_TAG = "[Bluetooth]"
+        private const val DEBUG_TAG = "[Bluetooth]"
         @JvmStatic
         fun log(message: String) = Log.i(DEBUG_TAG, message)
     }

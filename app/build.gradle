@@ -8,7 +8,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "it.unipi.di.sam.myphoton"
+        applicationId "it.unipi.di.sam.overwave"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1

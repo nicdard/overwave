@@ -116,6 +116,6 @@ class VibrationActuator(
     }
 
     companion object {
-        const val DEFAULT_FREQUENCY = 200
+        const val DEFAULT_FREQUENCY = 100
     }
 }
