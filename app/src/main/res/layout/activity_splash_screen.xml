@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="SplashScreen"
+    tools:context=".SplashActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark">
 
 
     <ImageView
-        android:id="@+id/splashLogo"
+        android:id="@+id/splash_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         app:srcCompat="@drawable/logo"
-        android:contentDescription="@string/splash_description"/>
+        android:contentDescription="@string/splash_description"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/splash_title"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/splash_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/splashLogo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:text="@string/app_name"
-        android:textColor="#ffff"
-        android:textAppearance="?android:textAppearanceLarge" />
-</RelativeLayout>
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/splash_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
 

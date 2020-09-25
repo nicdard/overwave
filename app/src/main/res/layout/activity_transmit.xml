@@ -35,6 +35,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:onClick="@{() -> viewModel.startTransmitter()}"
             android:enabled="@{viewModel.startButtonVisible}"
+            style="@style/Widget.AppCompat.Button.Colored"
             />
 
         <Button
@@ -47,6 +48,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:onClick="@{() -> viewModel.stopTransmitter()}"
             android:enabled="@{viewModel.stopButtonVisible}"
+            style="@style/Widget.AppCompat.Button.Colored"
             />
 
         <androidx.constraintlayout.widget.Guideline

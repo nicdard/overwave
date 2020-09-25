@@ -27,6 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:onClick="@{() -> viewModel.onStartButtonClicked()}"
             android:enabled="@{viewModel.isStartButtonEnabled}"
+            style="@style/Widget.AppCompat.Button.Colored"
             />
 
         <Button
@@ -38,7 +39,9 @@
             app:layout_constraintStart_toEndOf="@id/receive_start_button"
             app:layout_constraintTop_toTopOf="parent"
             android:onClick="@{() -> viewModel.onStopButtonClicked()}"
-            android:enabled="@{viewModel.isReceiving}" />
+            android:enabled="@{viewModel.isReceiving}"
+            style="@style/Widget.AppCompat.Button.Colored"
+            />
 
         <!-- <androidx.constraintlayout.widget.Guideline
             android:id="@+id/receive_horizontal_guideline"
@@ -66,7 +69,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:onClick="@{() -> viewModel.clean()}"
-            android:enabled="@{viewModel.isCleanButtonEnabled}"/>
+            android:enabled="@{viewModel.isCleanButtonEnabled}"
+            style="@style/Widget.AppCompat.Button.Colored"
+            />
 
         <!-- <TextView
             android:id="@+id/receive_message"

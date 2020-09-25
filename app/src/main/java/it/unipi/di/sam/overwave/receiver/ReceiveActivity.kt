@@ -139,7 +139,7 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
      *       so we can skip the enable request.
      */
     private fun ensureDiscoverable() {
-        if (/* binding.viewModel!!. */preferences.useBluetooth
+        if (preferences.useBluetooth
             // We don't want to bother the user more than needed.
             && !isDiscoverable()
         ) {
@@ -148,7 +148,7 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
             startActivityForResult(discoverableIntent, REQUEST_ENABLE_DISCOVERABLE_BT)
         } else {
             // The device is already discoverable, must be sure that the bluetooth server is listening for connections!
-            if (/* binding.viewModel!!.*/preferences.useBluetooth && !bluetoothSyncService!!.isStarted()) {
+            if (preferences.useBluetooth && !(bluetoothSyncService?.isStarted() == true)) {
                 // Start the BluetoothServer.
                 bluetoothSyncService!!.start()
             }
@@ -169,7 +169,6 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                     Toast
                         .makeText(this, R.string.bluetooth_not_available, Toast.LENGTH_LONG)
                         .show()
-                    // binding.viewModel!!.stopReceive()
                 } else {
                     if (!bluetoothSyncService!!.isStarted()) {
                         // Start the BluetoothServer.

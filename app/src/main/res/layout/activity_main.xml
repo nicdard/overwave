@@ -4,14 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context=".MainActivity" >
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/title_horizontal_guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
+    tools:context=".MainActivity"
+    android:background="@drawable/waves">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/title_left_guideline"
@@ -30,14 +24,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/to_transmit_activity_button"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintTop_toTopOf="@id/title_horizontal_guideline"
             app:layout_constraintStart_toStartOf="@id/title_left_guideline"
             app:layout_constraintEnd_toEndOf="@id/title_right_guideline"
             android:text="@string/app_name"
             tools:text="@string/app_name"
             android:textSize="30sp"
             />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/title_horizontal_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
 
         <Button
             android:id="@+id/to_transmit_activity_button"
@@ -50,6 +51,7 @@
             app:layout_constraintVertical_bias="1"
             app:layout_constraintVertical_chainStyle="packed"
             android:text="@string/transmitter"
+            style="@style/Widget.AppCompat.Button.Colored"
             />
 
 
@@ -62,6 +64,7 @@
             app:layout_constraintStart_toStartOf="@id/title_left_guideline"
             app:layout_constraintEnd_toEndOf="@id/title_right_guideline"
             android:text="@string/receiver"
+            style="@style/Widget.AppCompat.Button.Colored"
             />
 
 
