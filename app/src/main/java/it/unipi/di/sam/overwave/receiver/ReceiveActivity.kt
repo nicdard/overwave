@@ -148,9 +148,9 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
             startActivityForResult(discoverableIntent, REQUEST_ENABLE_DISCOVERABLE_BT)
         } else {
             // The device is already discoverable, must be sure that the bluetooth server is listening for connections!
-            if (preferences.useBluetooth && !(bluetoothSyncService?.isStarted() == true)) {
+            if (preferences.useBluetooth && bluetoothSyncService?.isStarted() != true) {
                 // Start the BluetoothServer.
-                bluetoothSyncService!!.start()
+                bluetoothSyncService?.start()
             }
         }
     }
@@ -170,9 +170,9 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                         .makeText(this, R.string.bluetooth_not_available, Toast.LENGTH_LONG)
                         .show()
                 } else {
-                    if (!bluetoothSyncService!!.isStarted()) {
+                    if (bluetoothSyncService?.isStarted() != true) {
                         // Start the BluetoothServer.
-                        bluetoothSyncService!!.start()
+                        bluetoothSyncService?.start()
                     }
                     Toast.makeText(
                         this,
