@@ -1,4 +1,4 @@
 # overwave
 
-Exchange data between mobile devices throughout just waves!
+Exchange data between mobile devices just through waves!
 
