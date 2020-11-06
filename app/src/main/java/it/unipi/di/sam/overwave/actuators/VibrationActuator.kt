@@ -16,27 +16,28 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileWriter
 
+/**
+ * Uses the vibrator to transmit the message encoding it with an On-off keying technique.
+ */
 class VibrationActuator(
     private val context: Context,
-    private val shouldSaveRawData: Boolean = false,
-    private val storageDir: String?,
-) : IActuator {
+    shouldSaveRawData: Boolean = false,
+    storageDir: String?,
+) : BaseActuator(
+    shouldSaveRawData,
+    storageDir
+) {
 
-    private var writer: FileWriter? = null
     private var vibrator: Vibrator? = null
         get() = synchronized(this@VibrationActuator) { field }
         set(value) = synchronized(this@VibrationActuator) { field = value}
 
     override fun initialise() {
-        if (shouldSaveRawData && storageDir != null && writer == null) {
-            writer = try {
-                FileWriter(File(storageDir, "vibrator" + System.currentTimeMillis() + ".csv"))
-            } catch (e: Exception) {
-                null
-            }
-        }
+        super.initialise()
         vibrator = ContextCompat.getSystemService(context, Vibrator::class.java)
     }
+
+    override fun getRawFilename(): String =  "vibrator${System.currentTimeMillis()}.csv"
 
     override suspend fun transmit(data: ByteArray, frequency: Int, viewModel: TransmitViewModel) {
         val finalVibrator = vibrator
@@ -48,19 +49,21 @@ class VibrationActuator(
                 val timings = createTimings(payload, frequency)
                 // Use the vibrator to transmit the data.
                 withContext(Dispatchers.IO) {
-                    writer?.run {
-                        write(String.format("expectedTime; %d \n", frequency * payload.length))
-                        write(String.format("start; %d \n", System.currentTimeMillis()))
-                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        val amplitudes = timings.mapIndexed {
-                                index, _ -> if (index % 2 == 0) 0 else VibrationEffect.DEFAULT_AMPLITUDE
-                        }.toIntArray()
-                        finalVibrator.vibrate(VibrationEffect.createWaveform(
-                            timings,
-                            amplitudes,
-                            -1
-                        ))
+                        if (shouldSaveRawData) {
+                            // TODO log data
+                        } else {
+                            val amplitudes = timings.mapIndexed { index, _ ->
+                                if (index % 2 == 0) 0 else VibrationEffect.DEFAULT_AMPLITUDE
+                            }.toIntArray()
+                            finalVibrator.vibrate(
+                                VibrationEffect.createWaveform(
+                                    timings,
+                                    amplitudes,
+                                    -1
+                                )
+                            )
+                        }
                     } else {
                         @Suppress("DEPRECATION")
                         finalVibrator.vibrate(timings, -1)
@@ -74,9 +77,6 @@ class VibrationActuator(
                         // In the meantime, update the UI so the user knows that something is going on.
                         viewModel.publishProgress(100 * i / length)
                     }
-                    writer?.run {
-                        write(String.format("end; %d \n", System.currentTimeMillis()))
-                    }
                 }
             }
         } else {
@@ -85,15 +85,9 @@ class VibrationActuator(
     }
 
     override fun dispose() {
-        try {
-            writer?.close()
-        } catch (e: Exception) {}
-        writer = null
+        super.dispose()
         vibrator?.cancel()
     }
-
-    // It doesn't requires a runtime permission, we can go therefore with vacuous truth
-    override fun neededPermissions(): Array<String> = arrayOf()
 
     private fun createTimings(payload: String, frequency: Int): LongArray {
         // Transform into a vibration pattern.

@@ -1,5 +1,6 @@
 package it.unipi.di.sam.overwave.utils
 
+import it.unipi.di.sam.overwave.actuators.ScreenBrightnessActuator
 import it.unipi.di.sam.overwave.actuators.TorchActuator
 import it.unipi.di.sam.overwave.actuators.VibrationActuator
 
@@ -27,7 +28,8 @@ fun decode(signal: String) = signal
     .joinToString("")
 
 fun getDefaultFrequency(wave: String) = when(wave) {
+    "screen brightness" -> ScreenBrightnessActuator.DEFAULT_FREQUENCY
     "light" -> TorchActuator.DEFAULT_FREQUENCY
     "vibration" -> VibrationActuator.DEFAULT_FREQUENCY
-    else -> TODO("sound frequency missing")
+    else -> TODO("${wave} frequency missing")
 }

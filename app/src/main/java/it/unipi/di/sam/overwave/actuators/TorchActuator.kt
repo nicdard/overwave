@@ -13,9 +13,12 @@ import java.io.FileWriter
 @Suppress("DEPRECATION")
 class TorchActuator(
     private val holder: SurfaceHolder,
-    private val shouldSaveRawData: Boolean = false,
-    private val storageDir: String?,
-) : IActuator, SurfaceHolder.Callback, Camera.AutoFocusCallback {
+    shouldSaveRawData: Boolean = false,
+    storageDir: String?,
+) : BaseActuator(
+    shouldSaveRawData,
+    storageDir
+), SurfaceHolder.Callback, Camera.AutoFocusCallback {
 
     init {
         holder.addCallback(this)
@@ -25,17 +28,8 @@ class TorchActuator(
         get() = synchronized(this@TorchActuator) { field }
         set(value) = synchronized(this@TorchActuator) { field = value}
 
-    private var writer: FileWriter? = null
-    private val timestamps = mutableListOf<Long>()
-
     override fun initialise() {
-        if (shouldSaveRawData && storageDir != null && writer == null) {
-            writer = try {
-                FileWriter(File(storageDir, "camera" + System.currentTimeMillis() + ".csv"))
-            } catch (e: Exception) {
-                null
-            }
-        }
+        super.initialise()
         if (camera == null) {
             try {
                 camera = Camera.open() // attempt to get a Camera instance
@@ -47,6 +41,8 @@ class TorchActuator(
             }
         }
     }
+
+    override fun getRawFilename(): String = "camera${System.currentTimeMillis()}.csv"
 
     override suspend fun transmit(data: ByteArray, frequency: Int, viewModel: TransmitViewModel) {
         withContext(Dispatchers.IO) {
@@ -83,25 +79,17 @@ class TorchActuator(
                         viewModel.publishProgress(100 * i / length)
                     }
                     delay(milliseconds)
-                    timestamps.add(System.currentTimeMillis())
+                    storeTimestamp()
                 }
                 // Turn off the light after transmission.
                 parameters = poff
-                writer?.run {
-                    timestamps.forEach {
-                        write(String.format("%d \n", it))
-                    }
-                }
-                timestamps.clear()
+                writeRawData()
             }
         }
     }
 
     override fun dispose() {
-        try {
-            writer?.close()
-        } catch (e: Exception) {}
-        writer = null
+        super.dispose()
         camera?.stopPreview()
         // Release camera resource
         camera?.release()

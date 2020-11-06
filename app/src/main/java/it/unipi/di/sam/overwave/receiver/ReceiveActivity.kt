@@ -18,6 +18,7 @@ import it.unipi.di.sam.overwave.database.TransmissionDatabase
 import it.unipi.di.sam.overwave.databinding.ActivityReceiveBinding
 import it.unipi.di.sam.overwave.sensors.ISensor
 import it.unipi.di.sam.overwave.sensors.LuminositySensor
+import it.unipi.di.sam.overwave.sensors.ScreenBrightnessSensor
 import it.unipi.di.sam.overwave.sensors.VibrationSensor
 import it.unipi.di.sam.overwave.utils.Preferences
 import it.unipi.di.sam.overwave.utils.getDefaultFrequency
@@ -90,20 +91,15 @@ class ReceiveActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
         super.onDestroy()
     }
 
-    private fun getCurrentSensor(wave: String = preferences.wave) = when (wave) {
-        getString(R.string.light) -> LuminositySensor(
-            application.getSystemService(
-                SENSOR_SERVICE
-            ) as SensorManager
-        )
-        getString(R.string.vibration) -> VibrationSensor(
-            application.getSystemService(
-                SENSOR_SERVICE
-            ) as SensorManager
-        )
-        else -> TODO("implement ${preferences.wave}")
+    private fun getCurrentSensor(wave: String = preferences.wave): ISensor {
+        val sensorManager = application.getSystemService(SENSOR_SERVICE) as SensorManager
+        return when (wave) {
+            getString(R.string.screen_brightness) -> ScreenBrightnessSensor(sensorManager, window)
+            getString(R.string.light) -> LuminositySensor(sensorManager)
+            getString(R.string.vibration) -> VibrationSensor(sensorManager)
+            else -> TODO("implement ${preferences.wave}")
+        }
     }
-
 
     private fun processStartedTransmission(
         wave: String = preferences.wave,

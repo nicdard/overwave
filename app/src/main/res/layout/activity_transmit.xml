@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:enabled="@{viewModel.startButtonVisible}"
-                android:text="" />
+                android:text="ciao" />
         </LinearLayout>
 
         <ProgressBar

@@ -24,6 +24,11 @@ abstract class BaseMenuActivity : AppCompatActivity() {
                 startActivity(intentSettings)
                 return true
             }
+            R.id.id_sensor -> {
+                val intentSensors = Intent(this, SensorListActivity::class.java)
+                startActivity(intentSensors)
+                return true
+            }
         }
         return true
     }

@@ -12,7 +12,8 @@ import java.text.SimpleDateFormat
 fun toWaveId(wave: String): Int = when(wave) {
     "light" -> 0
     "vibration" -> 1
-    else -> 2
+    "screen brightness" -> 2
+    else -> 3
 }
 
 @BindingAdapter("waveImage")
@@ -20,6 +21,7 @@ fun ImageView.setWaveImage(item: Transmission) {
     this.setImageResource(when(item.wave) {
         0 -> R.drawable.light
         1 -> R.drawable.vibration
+        2 -> R.drawable.screen_brightness
         else -> R.drawable.sound
     })
 }

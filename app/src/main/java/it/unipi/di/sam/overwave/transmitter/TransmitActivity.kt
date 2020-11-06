@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import it.unipi.di.sam.overwave.BaseMenuActivity
 import it.unipi.di.sam.overwave.R
 import it.unipi.di.sam.overwave.actuators.IActuator
+import it.unipi.di.sam.overwave.actuators.ScreenBrightnessActuator
 import it.unipi.di.sam.overwave.actuators.TorchActuator
 import it.unipi.di.sam.overwave.actuators.VibrationActuator
 import it.unipi.di.sam.overwave.bluetooth.*
@@ -97,18 +99,25 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
 
     override fun onStart() {
         super.onStart()
+        val storageDir = getExternalFilesDir(null)?.absolutePath
         actuator = when (preferences.wave) {
             getString(R.string.light) -> TorchActuator(
                 binding.surfaceView.holder,
                 preferences.shouldSaveRawData,
-                getExternalFilesDir(null)?.absolutePath,
+                storageDir,
+            )
+            getString(R.string.screen_brightness) -> ScreenBrightnessActuator(
+                window,
+                preferences.shouldSaveRawData,
+                storageDir,
+                application
             )
             getString(R.string.vibration) -> VibrationActuator(
                 applicationContext,
                 preferences.shouldSaveRawData,
-                getExternalFilesDir(null)?.absolutePath
+                storageDir
             )
-            else -> TODO("implement")
+            else -> TODO("implement ${preferences.wave}")
         }
         if (!hasPermissions()) {
             requestPermission()

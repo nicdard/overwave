@@ -4,10 +4,14 @@
     <item
         android:title="@string/settings"
         android:id="@+id/id_settings"
-        android:orderInCategory="1" />
+        android:orderInCategory="3" />
+    <item
+        android:title="@string/sensors"
+        android:id="@+id/id_sensor"
+        android:orderInCategory="2" />
     <item
         android:title="@string/about"
         android:id="@+id/id_about"
-        android:orderInCategory="2" />
+        android:orderInCategory="1" />
 
 </menu>

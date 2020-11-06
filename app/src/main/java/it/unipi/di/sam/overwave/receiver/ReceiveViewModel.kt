@@ -85,11 +85,11 @@ class ReceiveViewModel(
 
     private suspend fun getCurrentFromDatabase(): Transmission? {
         return withContext(Dispatchers.IO) {
-            var night = database.getCurrent()
-            if (night?.endTimeMillis != night?.endTimeMillis) {
-                night = null
+            var transmission = database.getCurrent()
+            if (transmission?.endTimeMillis != transmission?.endTimeMillis) {
+                transmission = null
             }
-            night
+            transmission
         }
     }
 

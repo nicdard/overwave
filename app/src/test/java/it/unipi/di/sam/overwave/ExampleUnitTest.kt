@@ -1,5 +1,8 @@
 package it.unipi.di.sam.overwave
 
+import it.unipi.di.sam.overwave.utils.dataToBinaryString
+import it.unipi.di.sam.overwave.utils.decode
+import org.junit.Assert
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -12,7 +15,10 @@ import org.junit.Assert.*
 class ExampleUnitTest {
 
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun encodeAndDecode_areInverses() {
+        val binaryString = dataToBinaryString("ciao".toByteArray())
+        println(binaryString)
+        val data = decode(binaryString)
+        assertEquals("ciao", data)
     }
 }

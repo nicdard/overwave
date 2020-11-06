@@ -1,6 +1,5 @@
 package it.unipi.di.sam.overwave.database
 
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert

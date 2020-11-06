@@ -2,13 +2,11 @@ package it.unipi.di.sam.overwave.sensors
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import it.unipi.di.sam.overwave.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.io.FileWriter
 import java.math.BigDecimal
 
@@ -77,7 +75,7 @@ class LuminositySensor(
         /**
          * Empirical measured threshold.
          */
-        private const val ERROR_THRESHOLD = 400
+        private const val ERROR_THRESHOLD = 30
         /**
          * The empirical measured flash light on/off latency in milliseconds.
          */

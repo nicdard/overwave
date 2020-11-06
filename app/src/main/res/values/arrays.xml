@@ -2,6 +2,7 @@
     <!-- Wave Preference -->
     <string-array name="waves">
         <item>@string/light</item>
+        <item>@string/screen_brightness</item>
         <item>@string/sound</item>
         <item>@string/vibration</item>
     </string-array>

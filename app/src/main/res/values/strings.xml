@@ -50,8 +50,10 @@
 
     <!-- waves -->
     <string name="light">light</string>
+    <string name="screen_brightness">screen brightness</string>
     <string name="sound">sound</string>
     <string name="vibration">vibration</string>
     <string name="bluetooth_device_error">Receiver device experienced an error</string>
     <string name="missing_vibrator">Couldn\'t find a Vibrator to transmit the data</string>
+    <string name="sensors">Sensors</string>
 </resources>
