@@ -57,7 +57,7 @@ class ScreenBrightnessSensor(
                 val threshold = minMaxMean.toBigDecimal()
                 val bits = sampleMeanByFrequency.entries
                     .sortedBy { it.key }
-                    .map { if (it.value > threshold) '1' else '0' }
+                    .map { if (it.value >= threshold) '1' else '0' }
                     .joinToString(separator = "")
                 decoded = decode(bits)
             }
