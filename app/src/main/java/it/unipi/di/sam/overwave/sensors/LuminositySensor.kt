@@ -14,7 +14,7 @@ data class LuminosityData(val timestamp: Long, val intensity: Long)
 
 class LuminositySensor(
     sensorManager: SensorManager?
-) : BaseSensor<LuminosityData>(sensorManager, Sensor.TYPE_LIGHT, SAMPLING_PERIOD){
+) : BaseSensor<LuminosityData>(sensorManager, Sensor.TYPE_LIGHT, SAMPLING_PERIOD) {
 
     override suspend fun decodeSignal(transmitterFrequency: Int): String {
         var decoded = ""

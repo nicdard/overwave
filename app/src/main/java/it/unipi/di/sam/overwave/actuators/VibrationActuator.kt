@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import it.unipi.di.sam.overwave.R
 import it.unipi.di.sam.overwave.transmitter.TransmitViewModel
@@ -13,20 +14,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileWriter
 
 /**
  * Uses the vibrator to transmit the message encoding it with an On-off keying technique.
  */
 class VibrationActuator(
     private val context: Context,
-    shouldSaveRawData: Boolean = false,
-    storageDir: String?,
-) : BaseActuator(
-    shouldSaveRawData,
-    storageDir
-) {
+    private val patternCreator: VibrationPatternCreator = TransitionTimeDistanceKeying()
+) : BaseActuator(false, null) {
 
     private var vibrator: Vibrator? = null
         get() = synchronized(this@VibrationActuator) { field }
@@ -44,36 +39,29 @@ class VibrationActuator(
         if (finalVibrator != null && finalVibrator.hasVibrator()) {
             withContext(Dispatchers.Default) {
                 // Add Initial-sequence
-                val payload = dataToBinaryString(data)
+                val payload = patternCreator.binaryEncoder(data)
                 // Transform into a vibration pattern.
-                val timings = createTimings(payload, frequency)
+                val timings = patternCreator.timings(payload, frequency)
                 // Use the vibrator to transmit the data.
                 withContext(Dispatchers.IO) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        if (shouldSaveRawData) {
-                            // TODO log data
-                        } else {
-                            val amplitudes = timings.mapIndexed { index, _ ->
-                                if (index % 2 == 0) 0 else VibrationEffect.DEFAULT_AMPLITUDE
-                            }.toIntArray()
-                            finalVibrator.vibrate(
-                                VibrationEffect.createWaveform(
-                                    timings,
-                                    amplitudes,
-                                    -1
-                                )
-                            )
-                        }
+                        val amplitudes = patternCreator.amplitudes(timings)
+                        val waveForm =
+                            if (amplitudes.isEmpty()) VibrationEffect.createWaveform(timings, -1)
+                            else VibrationEffect.createWaveform(timings, amplitudes, -1)
+                        finalVibrator.vibrate(waveForm)
                     } else {
                         @Suppress("DEPRECATION")
                         finalVibrator.vibrate(timings, -1)
                     }
                     // Wait for an amount of time equal to the length of the pattern,
                     // this way the coroutine returns only after the transmission did complete.
-                    val length = payload.length
+                    val length = timings.size
+                    val totalTime = timings.toList().sum()
+                    val delayTime = totalTime / (length / 3)
                     for (i in 0..length step 3) {
                         if (!isActive) break
-                        delay(frequency * 3L)
+                        delay(delayTime)
                         // In the meantime, update the UI so the user knows that something is going on.
                         viewModel.publishProgress(100 * i / length)
                     }
@@ -89,7 +77,43 @@ class VibrationActuator(
         vibrator?.cancel()
     }
 
-    private fun createTimings(payload: String, frequency: Int): LongArray {
+    companion object {
+        const val DEFAULT_FREQUENCY = 200
+    }
+}
+
+/**
+ * Using a strategy pattern instead of higher order functions to pass one single object including
+ * all needed functions to create the vibration pattern to the [VibrationActuator]. I think this
+ * way is better organised and will not lead to confusion when adding new encoding strategies.
+ */
+interface VibrationPatternCreator {
+
+    fun binaryEncoder(data: ByteArray): String
+    /**
+     * Creates the timings of alternating On/Off states of the [android.os.Vibrator].
+     * The sequence of states is assumed to start with 0.
+     */
+    fun timings(payload: String, frequency: Int): LongArray
+    /**
+     * Given an array of timings, create an associated array of amplitudes to feed
+     * [android.os.VibrationEffect.createWaveform].
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun amplitudes(timings: LongArray): IntArray
+}
+
+/**
+ * On-Off keying vibration encoder for binary string.
+ */
+class OnOffKeying : VibrationPatternCreator {
+
+    override fun binaryEncoder(data: ByteArray) = dataToBinaryString(data)
+    /**
+     * Returns equal vibration timing sequence to obtain an On-Off Keying encoding of the binary
+     * string [payload].
+     */
+    override fun timings(payload: String, frequency: Int): LongArray {
         // Transform into a vibration pattern.
         val timings = mutableListOf<Long>()
         var lastSeen = '0'
@@ -109,7 +133,46 @@ class VibrationActuator(
         return timings.toLongArray()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun amplitudes(timings: LongArray): IntArray = timings.mapIndexed { index, _ ->
+        if (index % 2 == 0) 0 else VibrationEffect.DEFAULT_AMPLITUDE
+    }.toIntArray()
+}
+
+class TransitionTimeDistanceKeying : VibrationPatternCreator {
+
+    override fun binaryEncoder(data: ByteArray): String = data.joinToString(prefix = "", separator = "", postfix = "") {
+        // Get the binary string representation of the byte
+        Integer.toBinaryString(it.toInt())
+            // 8-bit 0-padded string.
+            .padStart(8, '0')
+    }
+
+    override fun timings(payload: String, frequency: Int): LongArray {
+        // Transform into a vibration pattern.
+        val timings = mutableListOf<Long>()
+        timings.add(0)
+        val longFrequency = frequency.toLong()
+        for (bit in payload) {
+            if (bit == '0') {
+                timings.add(PULSE_DURATION)
+                timings.add(longFrequency * 2)
+            } else {
+                timings.add(PULSE_DURATION)
+                timings.add(longFrequency * 6)
+            }
+        }
+        return timings.toLongArray()
+    }
+
+    override fun amplitudes(timings: LongArray): IntArray {
+        return intArrayOf()
+    }
+
     companion object {
-        const val DEFAULT_FREQUENCY = 100
+        /**
+         * The time in ms of an on vibration impulse.
+         */
+        const val PULSE_DURATION: Long = 100
     }
 }

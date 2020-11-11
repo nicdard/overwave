@@ -5,7 +5,6 @@
     <!-- flash light -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -13,7 +12,9 @@
         android:name="android.hardware.camera.flash"
         android:required="true" /> <!-- luminosity sensor to receive flash light transmissions -->
     <uses-feature android:name="android.hardware.sensor.light" /> <!-- vibration -->
+
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- Bluetooth -->
+    
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

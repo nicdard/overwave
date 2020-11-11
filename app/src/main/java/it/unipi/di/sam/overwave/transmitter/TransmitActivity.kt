@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -112,11 +111,7 @@ class TransmitActivity : BaseMenuActivity(), CoroutineScope by MainScope() {
                 storageDir,
                 application
             )
-            getString(R.string.vibration) -> VibrationActuator(
-                applicationContext,
-                preferences.shouldSaveRawData,
-                storageDir
-            )
+            getString(R.string.vibration) -> VibrationActuator(applicationContext)
             else -> TODO("implement ${preferences.wave}")
         }
         if (!hasPermissions()) {
