@@ -150,29 +150,32 @@ class TransitionTimeDistanceKeying : VibrationPatternCreator {
 
     override fun timings(payload: String, frequency: Int): LongArray {
         // Transform into a vibration pattern.
-        val timings = mutableListOf<Long>()
-        timings.add(0)
+        val timings = mutableListOf<Long>(0)
         val longFrequency = frequency.toLong()
         for (bit in payload) {
             if (bit == '0') {
                 timings.add(PULSE_DURATION)
-                timings.add(longFrequency * 2)
+                timings.add(longFrequency * 3)
             } else {
                 timings.add(PULSE_DURATION)
-                timings.add(longFrequency * 6)
+                timings.add(longFrequency * 8)
             }
         }
+        // Signals the end of the last bit, otherwise the receiver will always detect a 1.
+        timings.add(PULSE_DURATION)
         return timings.toLongArray()
     }
 
     override fun amplitudes(timings: LongArray): IntArray {
-        return intArrayOf()
+        return timings.mapIndexed { index, _ ->
+            if (index % 2 == 0) 0 else 255
+        }.toIntArray()
     }
 
     companion object {
         /**
          * The time in ms of an on vibration impulse.
          */
-        const val PULSE_DURATION: Long = 100
+        const val PULSE_DURATION: Long = 200
     }
 }

@@ -74,7 +74,7 @@ class VibrationSensor(
         }
         // Decode the signal based on timing
         var lastTimestamp = raw[0].key
-        val middleTime = 5 * (transmitterFrequency * 1000000)
+        val middleTime = 6 * (transmitterFrequency * 1000000)
         val decodedBinary = mutableListOf<Char>()
         i = 1
         while (isActive && i < raw.size) {
