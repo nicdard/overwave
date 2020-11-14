@@ -5,6 +5,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorManager
 import it.unipi.di.sam.overwave.utils.RunningStats
 import it.unipi.di.sam.overwave.utils.decode
+import it.unipi.di.sam.overwave.utils.smoothedZScore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
@@ -52,6 +53,46 @@ class VibrationSensor(
         samples.clear()
         return decoded
     }
+
+    /*
+    private fun CoroutineScope.decodePeekDetection(transmitterFrequency: Int, stddevs: Map<Long, Double>): String {
+        val peeks = smoothedZScore(
+            stddevs.entries.sortedBy { it.key }.map { it.value },
+            5,
+            0.8,
+            0.2
+        ).first.toMutableList()
+        val raw = stddevs.entries.sortedBy { it.key }.mapIndexed { index, entry ->
+            entry.key to (peeks[index] > 0)
+        }.toMap().entries.toMutableList()
+        var i = 1
+        // Drop consecutive equal values
+        while (isActive && i < raw.size) {
+            val entry = raw[i]
+            val previous = raw[i - 1]
+            if (previous.value == entry.value) {
+                raw.removeAt(i)
+            } else ++i
+        }
+        // Decode the signal based on timing
+        var lastTimestamp = raw[0].key
+        val middleTime = 6 * (transmitterFrequency * 1000000)
+        val decodedBinary = mutableListOf<Char>()
+        i = 1
+        while (isActive && i < raw.size) {
+            if (raw[i].value) {
+                if ((raw[i].key - lastTimestamp)  > middleTime) decodedBinary.add('1')
+                else decodedBinary.add('0')
+                lastTimestamp = raw[i].key
+            }
+            ++i
+        }
+        return decodedBinary.joinToString(separator = "")
+            .chunked(8)
+            .map { it.toInt(2).toChar() }
+            .joinToString("")
+    }
+    */
 
     private fun CoroutineScope.decodeTransitionTimeDistanceKeying(transmitterFrequency: Int, stddevs: Map<Long, Double>): String {
         val minMaxStats = RunningStats()

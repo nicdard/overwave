@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
  */
 class VibrationActuator(
     private val context: Context,
-    private val patternCreator: VibrationPatternCreator = TransitionTimeDistanceKeying()
+    private val patternCreator: VibrationPatternCreator = TransitionTimeShiftingKeying()
 ) : BaseActuator(false, null) {
 
     private var vibrator: Vibrator? = null
@@ -139,7 +139,7 @@ class OnOffKeying : VibrationPatternCreator {
     }.toIntArray()
 }
 
-class TransitionTimeDistanceKeying : VibrationPatternCreator {
+class TransitionTimeShiftingKeying : VibrationPatternCreator {
 
     override fun binaryEncoder(data: ByteArray): String = data.joinToString(prefix = "", separator = "", postfix = "") {
         // Get the binary string representation of the byte
